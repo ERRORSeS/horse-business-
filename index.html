@@ -3,78 +3,360 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>European Warmblood Dynasty</title>
+    <title>Horse Business Sim</title>
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f6f7fb;
-        --fg: #1f2430;
-        --card: #ffffff;
-        --accent: #5c4dff;
+        --bg-1: #061736;
+        --bg-2: #0b2b63;
+        --panel: #113a7d;
+        --panel-2: #184b98;
+        --tab: #0e3370;
+        --tab-active: #5da9ff;
+        --text: #e9f2ff;
+        --muted: #bfd4f7;
+        --border: rgba(255, 255, 255, 0.16);
+        --radius-xl: 20px;
+        --radius-lg: 14px;
       }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #12151f;
-          --fg: #e6e9f2;
-          --card: #1b2130;
-          --accent: #8f84ff;
-        }
-      }
+
+      * { box-sizing: border-box; }
+
       body {
         margin: 0;
+        min-height: 100vh;
         font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-        background: var(--bg);
-        color: var(--fg);
+        color: var(--text);
+        background: radial-gradient(circle at top, var(--bg-2), var(--bg-1) 60%);
       }
-      .wrap {
-        max-width: 900px;
-        margin: 3rem auto;
+
+      .app {
+        max-width: 1100px;
+        margin: 2rem auto;
         padding: 0 1rem;
       }
+
+      .shell {
+        border-radius: var(--radius-xl);
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid var(--border);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        overflow: hidden;
+      }
+
+      .top {
+        padding: 1rem 1rem 0.75rem;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.2rem, 2.8vw, 1.7rem);
+      }
+
+      .sub {
+        margin: 0.35rem 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0.55rem;
+        padding: 0 1rem 1rem;
+      }
+
+      .tab {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--tab);
+        color: var(--text);
+        font-weight: 700;
+        padding: 0.65rem 0.8rem;
+        cursor: pointer;
+      }
+
+      .tab.active {
+        background: var(--tab-active);
+        color: #07204d;
+        border-color: transparent;
+      }
+
+      .panel {
+        display: none;
+        padding: 0 1rem 1rem;
+      }
+
+      .panel.active { display: block; }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+
       .card {
-        background: var(--card);
-        border-radius: 14px;
-        padding: 1.5rem;
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        background: rgba(7, 26, 58, 0.52);
+        padding: 0.9rem;
       }
-      h1 { margin-top: 0; }
-      a.btn {
-        display: inline-block;
-        margin: 0.35rem 0.5rem 0.35rem 0;
-        padding: 0.65rem 1rem;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        border: 1px solid transparent;
+
+      .card h2 {
+        margin: 0 0 0.45rem;
+        font-size: 1rem;
       }
-      .primary { background: var(--accent); color: white; }
-      .secondary { border-color: var(--accent); color: var(--accent); }
-      ul { line-height: 1.6; }
-      .muted { opacity: 0.8; }
+
+      .card ul {
+        margin: 0;
+        padding-left: 1.05rem;
+      }
+
+      .card li { margin: 0.25rem 0; }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .pill {
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        padding: 0.35rem 0.62rem;
+        background: rgba(255, 255, 255, 0.07);
+        font-size: 0.87rem;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th,
+      .table td {
+        text-align: left;
+        padding: 0.45rem 0.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+        font-size: 0.92rem;
+      }
+
+      @media (max-width: 980px) {
+        .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 560px) {
+        .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
     </style>
   </head>
   <body>
-    <main class="wrap">
-      <section class="card">
-        <h1>European Warmblood Dynasty (Infinite Codex Edition)</h1>
-        <p class="muted">
-          The repository now includes a GitHub Pages-compatible landing page so the root URL loads correctly.
-        </p>
-        <p>
-          Use the buttons below to open the full game design and jump directly to major systems.
-        </p>
-        <p>
-          <a class="btn primary" href="./GAME_DESIGN.md">Open Full Design Spec</a>
-          <a class="btn secondary" href="./GAME_DESIGN.md#16-actions-tab-auction-module-up-to-30-horses">Open Actions/Auction System</a>
-        </p>
-        <h2>Included in this version</h2>
-        <ul>
-          <li>Infinite year simulation loop with monthly time-skip support.</li>
-          <li>Advanced staffing model (hiring, contracts, morale, quits, poaching).</li>
-          <li>International expansion with multi-barn operations and export/import risks.</li>
-          <li>Competition ladder from training shows to elite FEI level.</li>
-        </ul>
+    <main class="app">
+      <section class="shell">
+        <header class="top">
+          <h1>Horse Business Sim</h1>
+          <p class="sub">Clickable management tabs. No long-page lore text.</p>
+        </header>
+
+        <nav class="tabs" aria-label="Main game tabs">
+          <button class="tab active" data-target="horses">🐎 Horses</button>
+          <button class="tab" data-target="staff">👩‍🌾 Staff</button>
+          <button class="tab" data-target="sales">💼 Sales</button>
+          <button class="tab" data-target="auctions">🏷 Auctions</button>
+          <button class="tab" data-target="barn">🏗 Barn</button>
+          <button class="tab" data-target="vet">🏥 Veterinary</button>
+        </nav>
+
+        <section class="panel active" id="horses">
+          <div class="grid">
+            <article class="card">
+              <h2>Status Buckets</h2>
+              <div class="pill-row">
+                <span class="pill">🟢 Active (3+)</span>
+                <span class="pill">🟡 Young (1–3)</span>
+                <span class="pill">🔵 Breeding</span>
+              </div>
+            </article>
+            <article class="card">
+              <h2>Horse Stats</h2>
+              <table class="table">
+                <tr><th>Stat</th><th>Range</th></tr>
+                <tr><td>Conformation</td><td>1–10</td></tr>
+                <tr><td>Movement</td><td>1–10</td></tr>
+                <tr><td>Scope</td><td>1–10</td></tr>
+                <tr><td>Rideability</td><td>1–10</td></tr>
+                <tr><td>Temperament</td><td>1–10</td></tr>
+                <tr><td>Soundness</td><td>1–10</td></tr>
+                <tr><td>Bloodline Prestige</td><td>1–10</td></tr>
+              </table>
+            </article>
+            <article class="card">
+              <h2>Core Formula</h2>
+              <ul>
+                <li>Quality = (Conformation + Discipline Stat + Rideability) ÷ 3</li>
+                <li>Dressage → Movement</li>
+                <li>Showjumping → Scope</li>
+                <li>Eventing → Avg(Movement, Scope)</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="staff">
+          <div class="grid">
+            <article class="card">
+              <h2>Team Roles</h2>
+              <div class="pill-row">
+                <span class="pill">Stable Worker</span><span class="pill">Pro Rider</span>
+                <span class="pill">Breeding Manager</span><span class="pill">Sales Director</span>
+                <span class="pill">Veterinarian</span><span class="pill">Barn Manager</span>
+              </div>
+            </article>
+            <article class="card">
+              <h2>Attributes</h2>
+              <ul>
+                <li>Skill • Experience • Loyalty</li>
+                <li>Reputation • Work Ethic • Demandingness</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Risk</h2>
+              <ul>
+                <li>Loyalty &lt; 4 → resignation risk</li>
+                <li>High Demandingness → salary events</li>
+                <li>High Reputation → poaching risk</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="sales">
+          <div class="grid">
+            <article class="card">
+              <h2>Pricing Drivers</h2>
+              <ul>
+                <li>Conformation, Movement, Scope</li>
+                <li>Rideability, Temperament, Soundness</li>
+                <li>Bloodline Prestige</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Formula</h2>
+              <ul>
+                <li>Base Price = (Conformation + Primary Stat + Bloodline) × Market Multiplier</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Flow</h2>
+              <ul><li>Buy from NPC → moves to Active Horses</li></ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="auctions">
+          <div class="grid">
+            <article class="card">
+              <h2>Listing</h2>
+              <ul>
+                <li>Up to 30 horses</li>
+                <li>Start / Reserve / Discipline / Marketing</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Bidding Inputs</h2>
+              <ul>
+                <li>Horse Quality</li>
+                <li>Reputation</li>
+                <li>Market Condition</li>
+                <li>Discipline Demand</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Rules</h2>
+              <ul>
+                <li>Commission: 5–10%</li>
+                <li>Wins attract more bidders</li>
+                <li>Reputation &gt; 400 unlocks international buyers</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="barn">
+          <div class="grid">
+            <article class="card">
+              <h2>Facilities</h2>
+              <table class="table">
+                <tr><th>Facility</th><th>Cost</th></tr>
+                <tr><td>Basic Stable</td><td>€60,000</td></tr>
+                <tr><td>Professional Stable</td><td>€140,000</td></tr>
+                <tr><td>Elite Stable</td><td>€300,000</td></tr>
+                <tr><td>Indoor Arena</td><td>€120,000</td></tr>
+                <tr><td>Breeding Wing</td><td>€50,000</td></tr>
+                <tr><td>Vet Station</td><td>€40,000</td></tr>
+              </table>
+            </article>
+            <article class="card">
+              <h2>Upgrades</h2>
+              <div class="pill-row">
+                <span class="pill">Horse Walker</span><span class="pill">Solarium</span>
+                <span class="pill">Turnout</span><span class="pill">Staff Housing</span>
+                <span class="pill">Security</span><span class="pill">Tracks</span>
+              </div>
+            </article>
+            <article class="card">
+              <h2>Maintenance</h2>
+              <ul><li>Yearly cost = 3% of total facility cost</li></ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="vet">
+          <div class="grid">
+            <article class="card">
+              <h2>Services</h2>
+              <ul>
+                <li>Artificial Insemination</li>
+                <li>Take Vials</li>
+                <li>Live Insemination</li>
+                <li>Check-Up</li>
+                <li>Heal Injury</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Injury Risk</h2>
+              <ul>
+                <li>Risk = Base Risk − Staff Bonus − Facility Bonus</li>
+                <li>Factors: soundness, fatigue, competition, staff quality</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h2>Shared Sim Systems</h2>
+              <div class="pill-row">
+                <span class="pill">Cash</span><span class="pill">Reputation</span>
+                <span class="pill">Horse Stats</span><span class="pill">Market</span>
+                <span class="pill">Annual Events</span>
+              </div>
+            </article>
+          </div>
+        </section>
       </section>
     </main>
+
+    <script>
+      const tabs = document.querySelectorAll('.tab');
+      const panels = document.querySelectorAll('.panel');
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const targetId = tab.dataset.target;
+          tabs.forEach((t) => t.classList.remove('active'));
+          panels.forEach((p) => p.classList.remove('active'));
+          tab.classList.add('active');
+          const panel = document.getElementById(targetId);
+          if (panel) panel.classList.add('active');
+        });
+      });
+    </script>
   </body>
 </html>
