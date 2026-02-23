@@ -16,6 +16,228 @@ The game is intentionally pressure-heavy in early years and rewards long-term st
 
 ---
 
+## 1.1) 🐴 Tab-Based System Structure
+
+The game is organized around six primary management tabs:
+
+1. Horses
+2. Staff
+3. Sales
+4. Auctions
+5. Barn
+6. Veterinary
+
+Each tab feeds into shared simulation layers:
+
+- Cash
+- Reputation
+- Horse stats
+- Market conditions
+- Annual events
+
+### 1.1.1) 🐎 Horses Tab (Core System)
+
+#### Sub-tabs
+
+- 🟢 **Active Horses**
+  - Age: 3+
+  - In training and/or competition
+  - Can earn money and gain reputation
+  - Can move to sales, breeding (after retirement), or auctions
+- 🟡 **Young Horses**
+  - Age: 1–3
+  - Development stage only
+  - Cannot compete officially
+  - Can train and be sold as prospects
+  - Gains stats at a slower rate
+- 🔵 **Breeding Horses**
+  - Retired horses of any age/gender
+  - Includes broodmares, stallions, and retired competition horses
+  - Cannot compete
+  - Generates foals and stud leasing revenue
+
+#### Horse Stat System
+
+| Stat | Range | Effect |
+|---|---:|---|
+| Conformation | 1–10 | Overall value and breeding quality |
+| Movement | 1–10 | Dressage scoring potential |
+| Scope | 1–10 | Jumping ability |
+| Rideability | 1–10 | Training speed |
+| Temperament | 1–10 | Reputation stability |
+| Soundness | 1–10 | Injury resistance |
+| Bloodline Prestige | 1–10 | Stud and breeding value |
+
+#### Overall Quality Score (Market)
+
+`Quality = (Conformation + Discipline Stat + Rideability) / 3`
+
+Discipline stat by focus:
+
+- Dressage → Movement
+- Showjumping → Scope
+- Eventing → (Movement + Scope) / 2
+
+#### Horse Card Template
+
+- Name
+- Age
+- Gender
+- Discipline (Showjumping / Dressage / Eventing)
+- Status (Young / Active / Breeding)
+- Stats (full set)
+- Winnings
+- Health status
+- Market value
+- Assigned staff
+- Fatigue level
+
+### 1.1.2) 👩‍🌾 Staff Tab
+
+Staff records include:
+
+- Name
+- Gender
+- Age
+- Role
+- Salary
+- Contract length
+
+#### Staff Attributes
+
+| Attribute | Range | Affects |
+|---|---:|---|
+| Skill Level | 1–10 | Performance boost |
+| Experience | Years | Efficiency |
+| Loyalty | 1–10 | Leaving risk |
+| Reputation | 1–10 | Client attraction |
+| Work Ethic | 1–10 | Horse development speed |
+| Demandingness | 1–10 | Salary pressure over time |
+
+#### Roles
+
+- Stable Worker
+- Professional Rider
+- Breeding Manager
+- Sales Director
+- Veterinarian
+- Barn Manager
+
+Each role unlocks specialized bonuses.
+
+#### Staff Risk Triggers
+
+- If Loyalty < 4: yearly resignation chance increases.
+- If Demandingness is high: salary negotiation events may trigger.
+- If Reputation is high: competing farms may attempt poaching.
+
+### 1.1.3) 💼 Sales Tab
+
+Use this tab to buy horses from NPCs.
+
+#### NPC Price Inputs
+
+| Attribute | Pricing Impact |
+|---|---|
+| Conformation | Base sale value |
+| Movement | Dressage valuation |
+| Scope | Jumping valuation |
+| Rideability | Sale readiness/speed |
+| Temperament | Reputation risk |
+| Soundness | Injury risk discount |
+| Bloodline Prestige | Stud premium |
+
+Suggested formula:
+
+`Base Price = (Conformation + Primary Stat + Bloodline) × Market Multiplier`
+
+Purchased horses enter the Active Horses list.
+
+### 1.1.4) 🏷 Auctions Tab
+
+- Up to 30 horses can be listed at once.
+- Listing fields:
+  - Starting price
+  - Reserve price (optional)
+  - Discipline tag
+  - Marketing level
+
+When auction starts, NPC bids are driven by:
+
+- Horse quality
+- Farm reputation
+- Market condition
+- Discipline demand
+
+Bidding ends when no higher offers are made or reserve is not met.
+
+- Auction commission: 5–10%
+- If horse has competition wins: more bidders enter
+- If reputation > 400: international buyers can appear
+
+### 1.1.5) 🏗 Barn Management Tab
+
+| Facility | Cost | Effect |
+|---|---:|---|
+| Basic Stable | €60,000 | 8 horses |
+| Professional Stable | €140,000 | 16 horses |
+| Elite Stable | €300,000 | 32 horses |
+| Indoor Arena | €120,000 | Winter training bonus |
+| Breeding Wing | €50,000 | +10% fertility |
+| Vet Station | €40,000 | -20% emergency cost |
+
+Optional upgrades:
+
+- Horse walker
+- Solarium
+- Turnout fields
+- Staff housing
+- Security system
+- Training tracks
+
+Annual maintenance is 3% of total facility value. Skipping maintenance reduces efficiency.
+
+### 1.1.6) 🏥 Veterinary Tab
+
+#### Services
+
+- **Artificial insemination (mares):** variable cost, success based on fertility + Breeding Wing bonus.
+- **Take vials (stallions):** enables storage/sales and passive income for high-quality stallions.
+- **Live insemination:** higher success and higher cost, with slightly higher complication risk.
+- **Check-up:** reveals hidden injuries, soundness changes, fertility status, and readiness.
+- **Heal injury:** available only to injured horses; cost and recovery scale by severity.
+
+#### Injury Risk Model
+
+Risk depends on soundness, competition frequency, fatigue, and staff quality.
+
+`Risk = Base Risk - Staff Bonus - Facility Bonus`
+
+---
+
+## 1.2) 🔁 System Interactions
+
+- Breeding Wing increases foal quality potential.
+- Vet Station reduces emergency and injury pressure.
+- High reputation improves sale value and buyer quality.
+- Staff skill accelerates stat growth.
+- Indoor/Elite facilities improve training outcomes.
+- International access increases upside on elite horses.
+
+## 1.3) 📊 Recommended Tracking Sheets
+
+- Market index tracker
+- Facility upgrade tree
+- Horse fatigue log
+- Staff contract tracker
+- Fertility tracker
+- Injury recovery log
+- Auction history
+- Reputation ledger
+- Annual financial report
+
+---
+
 ## 2) Win/Loss States
 
 Because the game is infinite, there is no final "victory screen." Instead:
