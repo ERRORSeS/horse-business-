@@ -441,28 +441,325 @@ Additional:
 
 ---
 
-## 20) Year Loop (Infinite Engine)
+## 20) Time System (Infinite + Month-Skippable)
 
-Repeat forever:
+The game runs in continuous years, but all operations are processed by month so players can skip time in realistic increments.
 
-1. Roll market
-2. Roll event
-3. Decide breeding plan
-4. Decide training investment
-5. Run competitions
-6. Open auctions (Actions tab, max 30 listings)
-7. Settle sales & receivables
-8. Pay yearly costs, debt, maintenance
-9. Update reputation
-10. Revalue assets and compute net worth
-11. Check bankruptcy condition
-12. Advance year
+### 20.1 Calendar Model
+
+- 1 year = 12 months
+- You can advance by: **1 month**, **3 months (quarter)**, **6 months**, or **12 months**
+- Long skips auto-run intermediate checks (injury, staffing, cash burn, contracts, pregnancies, auctions)
+
+### 20.2 Monthly Tick (Auto-Processed)
+
+Each month resolves in this order:
+
+1. Payroll and fixed farm overhead
+2. Feed/farrier/vet routine accrual
+3. Training progress and fatigue updates
+4. Competition entries/results in scheduled months
+5. Breeding/pregnancy checks when in breeding windows
+6. Auctions and receivable settlements
+7. Random monthly events (light events)
+8. Cash + debt interest update
+
+### 20.3 Time Skip Safeguards
+
+When skipping multiple months:
+
+- Contract expiries still trigger on exact month
+- Horses cannot exceed welfare-safe competition frequency
+- If liquidity falls below 10% assets, bank pressure warning is injected immediately
+- If negative cash occurs, bankruptcy counter updates by year-end status
+
+### 20.4 Seasonal Structure
+
+- Indoor season (typically winter)
+- Outdoor season (spring/summer)
+- Championship months
+
+This supports realistic planning for training and show timing.
 
 ---
 
-## 21) Codex Play Mode (Recommended)
+## 21) Year Loop (Infinite Engine)
 
-For each year, Codex should output:
+Repeat forever:
+
+1. Run 12 monthly ticks (or player-selected month skips)
+2. Roll annual market state
+3. Roll annual major event
+4. Set annual breeding strategy
+5. Set annual training and competition plan
+6. Open/manage auctions (Actions tab, max 30 listings)
+7. Settle annual receivables/payables and taxes (if enabled)
+8. Recompute staff morale, loyalty, and retention risk
+9. Update reputation and global brand rank
+10. Revalue assets and compute net worth
+11. Run compliance checks (sale cap, development minimums, breeding age rules)
+12. Check bankruptcy condition and advance year
+
+---
+
+## 22) Staff Hiring System (Full Depth)
+
+Every staff member has tracked attributes:
+
+| Attribute | Range | Affects |
+|---|---|---|
+| Skill Level | 1–10 | Performance quality |
+| Experience | Years | Salary expectation and consistency |
+| Loyalty | 1–10 | Leaving/poaching risk |
+| Reputation | 1–10 | Client attraction and premium confidence |
+| Work Ethic | 1–10 | Horse development speed |
+| Demandingness | 1–10 | Salary growth pressure |
+
+### 22.1 Staff Roles
+
+#### Stable Worker
+
+- Salary: **€22,000–€35,000/year**
+- Required ratio: **1 per 8 horses**
+- Effect: lowers injury probability and supports soundness retention
+- Understaffing penalty: **+5% injury risk per missing worker**
+
+#### Professional Rider
+
+- Salary: **€40,000–€120,000/year**
+- Training Gain Modifier: `1 + (Skill / 20)`
+- Example: Skill 8 => 1.40x training growth
+- If rider reputation 8+: horses they campaign gain **+5% sale price**
+
+#### Breeding Manager
+
+- Salary: **€45,000–€90,000/year**
+- Effects:
+  - +10–25% fertility boost
+  - -50% foal mortality risk
+  - +1 foal stat reroll per year
+
+#### Sales & Marketing Director
+
+- Salary: **€35,000–€80,000/year**
+- Effects:
+  - Faster reputation growth
+  - +10–30% sale speed
+  - +5–15% sale price multiplier
+
+#### On-Site Vet (Elite Farms)
+
+- Salary: **€70,000–€150,000/year**
+- Effects:
+  - -60% emergency vet costs
+  - -70% mortality risk
+  - +2 yearly soundness retention (capped by horse max)
+
+### 22.2 Staff Development and Morale
+
+- Skill progression: +1 skill every 3 years when morale is strong
+- Morale formula:
+
+`Morale = (Loyalty + WorkConditions + SalarySatisfaction) / 3`
+
+- If morale < 5: 30% annual quit chance
+- If farm reputation > 400: high-skill applicant pool unlocked
+
+### 22.3 Contract System
+
+Contract options:
+
+- 1-year (flexible, low commitment)
+- 3-year (loyalty bonus)
+- 5-year (salary lock)
+
+Rules:
+
+- Early termination penalty = 50% of remaining salary
+- High reputation can trigger poaching events for top riders
+
+### 22.4 Strategy Trade-Off
+
+- Lean team = lower costs, higher operational risk
+- Heavy team = better horse outcomes, higher burn rate
+
+---
+
+## 23) International Expansion System
+
+Unlock requirements:
+
+- Reputation > 300
+- Net worth > €1,000,000
+
+### 23.1 Expansion Regions
+
+| Tier | Setup Cost | Operating Cost | Sale Multiplier |
+|---|---:|---|---:|
+| Eastern Europe | €150,000 | Low | x0.90 |
+| Central Europe | €300,000 | Medium | x1.00 |
+| Western Europe | €600,000 | High | x1.25 |
+| Elite Hub | €1,200,000 | Very High | x1.50 |
+
+Typical targets: Germany, Netherlands, Belgium.
+
+Elite hub grants:
+
+- Premium buyer access
+- Higher show and media exposure
+
+### 23.2 Multi-Barn Management
+
+Every branch tracks:
+
+- Staff roster
+- Horse count
+- Local reputation
+- Operating cost
+- Specialization (breeding/sales/competition)
+
+Global reputation formula:
+
+`Global Reputation = (HQ Reputation x 0.7) + (Branch Average x 0.3)`
+
+### 23.3 Export/Import
+
+- Export logistics cost: €5,000 per horse
+- Transport injury risk: 2% base (reduced with vet coverage)
+- International sale value bonus: +10–20%
+
+### 23.4 Global Brand Milestones
+
+- Reputation 500: sponsor offers
+- Reputation 700: international investors
+- Reputation 900: Olympic spotlight year chance
+
+### 23.5 Expansion Risks
+
+Each additional branch adds:
+
+- +10% management complexity
+- Increased administrative cost
+- Audit/legal exposure
+
+Potential events: tax audits, local outbreaks, political instability, land crashes, investor lawsuits.
+
+---
+
+## 24) Competition System (Global Performance Ladder)
+
+Compatible with breeding, staffing, and international mechanics.
+
+### 24.1 Disciplines
+
+- Dressage (movement, rideability, temperament)
+- Show Jumping (scope, reflexes/scope proxy, soundness)
+- Eventing (dressage + jumping + stamina proxy + soundness)
+
+### 24.2 Competition Levels
+
+| Level | Typical Age | Use Case |
+|---|---:|---|
+| Training Shows | 3–4 | Local preparation |
+| Young Horse Classes | 4–6 | Development and branding |
+| National | 5+ | Core competitive proving |
+| International | 6+ | High-performance exposure |
+| Elite / Grand Prix | 8+ | Top-tier commercial/sport value |
+
+### 24.3 Entry Cost Model
+
+| Tier | Entry Fee |
+|---|---:|
+| Local | €200 |
+| National | €500 |
+| International | €2,000 |
+| Elite | €5,000+ |
+
+Travel cost per show: €1,000–€10,000 by distance class.
+
+### 24.4 Performance Score
+
+`Performance Score = (HorseDisciplineStat x 2) + RiderSkill + TrainingModifier + RandomFactor`
+
+Random factor engine (1–20 roll):
+
+- 1–3: underperformance
+- 4–16: normal
+- 17–19: strong round
+- 20: breakthrough round
+
+### 24.5 Placements
+
+Use score percentile versus field difficulty:
+
+- Top 10%: Win
+- Top 25%: Placing
+- Mid: Average
+- Low: Poor
+- Very low: Elimination
+
+### 24.6 Reputation and Value Effects
+
+- International win: +20 reputation
+- Top 3: +10
+- Placing: +5
+- Elimination: -5
+
+Performance multipliers for horse value:
+
+| Result Profile | Value Multiplier |
+|---|---:|
+| No show record | x1.0 |
+| National placing | x1.2 |
+| International win | x1.5 |
+| Elite win | x2.0+ |
+
+### 24.7 Fatigue and Recovery
+
+- Each show adds fatigue and can reduce soundness by 1–2
+- If fatigue > 8: apply performance penalty
+- Mandatory 1-month rest after elite competition
+
+### 24.8 Elite Pathway
+
+For 1.50m+/Grand Prix track, horse should have:
+
+- Discipline stat 8+
+- Soundness 7+
+- Temperament 7+
+- At least 2 successful seasons
+
+### 24.9 Prize Money
+
+| Level | Prize Pool |
+|---|---:|
+| National | €1,000–€5,000 |
+| International | €5,000–€50,000 |
+| Elite | €50,000–€500,000 |
+
+---
+
+## 25) Required Additional Sheets
+
+Add these tabs to support advanced systems:
+
+- Staff Database
+- Contracts Log
+- Barn Branch Sheet
+- International Sales Sheet
+- Sponsor & Investor Log
+- Competition Calendar
+- Horse Performance Log
+- Prize Money Tracker
+- Fatigue Tracker
+- Discipline Ranking Sheet
+- International Points Table
+
+---
+
+## 26) Codex Play Mode (Recommended)
+
+For each year (with month-level drilldown), Codex should output:
 
 - Updated tables (all tabs)
 - Event and market roll details

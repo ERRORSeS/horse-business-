@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>European Warmblood Dynasty</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f7fb;
+        --fg: #1f2430;
+        --card: #ffffff;
+        --accent: #5c4dff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #12151f;
+          --fg: #e6e9f2;
+          --card: #1b2130;
+          --accent: #8f84ff;
+        }
+      }
+      body {
+        margin: 0;
+        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+      }
+      .wrap {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+      }
+      .card {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 1.5rem;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+      }
+      h1 { margin-top: 0; }
+      a.btn {
+        display: inline-block;
+        margin: 0.35rem 0.5rem 0.35rem 0;
+        padding: 0.65rem 1rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        border: 1px solid transparent;
+      }
+      .primary { background: var(--accent); color: white; }
+      .secondary { border-color: var(--accent); color: var(--accent); }
+      ul { line-height: 1.6; }
+      .muted { opacity: 0.8; }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="card">
+        <h1>European Warmblood Dynasty (Infinite Codex Edition)</h1>
+        <p class="muted">
+          The repository now includes a GitHub Pages-compatible landing page so the root URL loads correctly.
+        </p>
+        <p>
+          Use the buttons below to open the full game design and jump directly to major systems.
+        </p>
+        <p>
+          <a class="btn primary" href="./GAME_DESIGN.md">Open Full Design Spec</a>
+          <a class="btn secondary" href="./GAME_DESIGN.md#16-actions-tab-auction-module-up-to-30-horses">Open Actions/Auction System</a>
+        </p>
+        <h2>Included in this version</h2>
+        <ul>
+          <li>Infinite year simulation loop with monthly time-skip support.</li>
+          <li>Advanced staffing model (hiring, contracts, morale, quits, poaching).</li>
+          <li>International expansion with multi-barn operations and export/import risks.</li>
+          <li>Competition ladder from training shows to elite FEI level.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
