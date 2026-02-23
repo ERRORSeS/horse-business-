@@ -3,360 +3,823 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Horse Business Sim</title>
+    <title>Horse Business Management Sim</title>
     <style>
       :root {
-        --bg-1: #061736;
-        --bg-2: #0b2b63;
-        --panel: #113a7d;
-        --panel-2: #184b98;
-        --tab: #0e3370;
-        --tab-active: #5da9ff;
-        --text: #e9f2ff;
-        --muted: #bfd4f7;
-        --border: rgba(255, 255, 255, 0.16);
-        --radius-xl: 20px;
-        --radius-lg: 14px;
+        --bg: #081f45;
+        --bg-2: #10356f;
+        --card: #123f82;
+        --card-soft: #0f3369;
+        --text: #eaf2ff;
+        --muted: #bfd2f4;
+        --accent: #67b0ff;
+        --danger: #ff7d7d;
+        --ok: #61d9a1;
+        --warn: #ffd37d;
+        --radius: 14px;
       }
-
       * { box-sizing: border-box; }
-
       body {
         margin: 0;
         min-height: 100vh;
         font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
         color: var(--text);
-        background: radial-gradient(circle at top, var(--bg-2), var(--bg-1) 60%);
+        background: radial-gradient(circle at top, var(--bg-2), var(--bg) 60%);
       }
-
-      .app {
-        max-width: 1100px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-
+      .container { max-width: 1280px; margin: 1rem auto 2rem; padding: 0 1rem; }
       .shell {
-        border-radius: var(--radius-xl);
-        background: linear-gradient(180deg, var(--panel), var(--panel-2));
-        border: 1px solid var(--border);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        background: linear-gradient(180deg, #15478f, #123a74);
+        border: 1px solid rgba(255,255,255,0.14);
+        border-radius: 18px;
+        box-shadow: 0 14px 34px rgba(0,0,0,0.35);
         overflow: hidden;
       }
-
-      .top {
-        padding: 1rem 1rem 0.75rem;
+      .topbar {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.9rem 1rem;
+        background: rgba(8, 26, 57, 0.35);
       }
-
-      h1 {
-        margin: 0;
-        font-size: clamp(1.2rem, 2.8vw, 1.7rem);
+      .title { margin: 0; font-size: 1.2rem; }
+      .muted { color: var(--muted); font-size: 0.9rem; }
+      .kpis { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+      .pill {
+        background: rgba(255,255,255,0.09);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 999px;
+        padding: 0.35rem 0.7rem;
+        font-size: 0.85rem;
       }
-
-      .sub {
-        margin: 0.35rem 0 0;
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
       .tabs {
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 0.55rem;
-        padding: 0 1rem 1rem;
+        grid-template-columns: repeat(9, minmax(0,1fr));
+        gap: 0.5rem;
+        padding: 0.8rem 1rem;
       }
-
       .tab {
-        border: 1px solid var(--border);
+        border: 1px solid rgba(255,255,255,0.22);
         border-radius: 999px;
-        background: var(--tab);
+        background: #0d336d;
         color: var(--text);
+        padding: 0.5rem 0.65rem;
         font-weight: 700;
-        padding: 0.65rem 0.8rem;
         cursor: pointer;
       }
-
-      .tab.active {
-        background: var(--tab-active);
-        color: #07204d;
-        border-color: transparent;
-      }
-
-      .panel {
-        display: none;
-        padding: 0 1rem 1rem;
-      }
-
+      .tab.active { background: var(--accent); color: #07224f; border-color: transparent; }
+      .content { padding: 0 1rem 1rem; }
+      .panel { display: none; }
       .panel.active { display: block; }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 0.8rem;
-      }
-
+      .grid { display: grid; gap: 0.8rem; grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .grid-3 { display: grid; gap: 0.8rem; grid-template-columns: repeat(3,minmax(0,1fr)); }
       .card {
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        background: rgba(7, 26, 58, 0.52);
-        padding: 0.9rem;
+        background: linear-gradient(180deg, var(--card), var(--card-soft));
+        border: 1px solid rgba(255,255,255,0.13);
+        border-radius: var(--radius);
+        padding: 0.8rem;
       }
-
-      .card h2 {
-        margin: 0 0 0.45rem;
-        font-size: 1rem;
-      }
-
-      .card ul {
-        margin: 0;
-        padding-left: 1.05rem;
-      }
-
-      .card li { margin: 0.25rem 0; }
-
-      .pill-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.45rem;
-      }
-
-      .pill {
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        padding: 0.35rem 0.62rem;
-        background: rgba(255, 255, 255, 0.07);
-        font-size: 0.87rem;
-      }
-
-      .table {
+      h2, h3 { margin: 0.2rem 0 0.6rem; }
+      label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.2rem; }
+      input, select, button, textarea {
         width: 100%;
-        border-collapse: collapse;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 10px;
+        background: rgba(255,255,255,0.08);
+        color: var(--text);
+        padding: 0.45rem 0.55rem;
       }
-
-      .table th,
-      .table td {
-        text-align: left;
-        padding: 0.45rem 0.25rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.13);
-        font-size: 0.92rem;
+      button { font-weight: 700; cursor: pointer; }
+      .btn-row { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+      .btn-row button { width: auto; }
+      .btn-primary { background: var(--accent); color: #06214c; border-color: transparent; }
+      .btn-danger { background: var(--danger); color: #4b0808; border-color: transparent; }
+      .btn-ok { background: var(--ok); color: #083726; border-color: transparent; }
+      .btn-warn { background: var(--warn); color: #543d06; border-color: transparent; }
+      .form-grid { display: grid; gap: 0.5rem; grid-template-columns: repeat(3,minmax(0,1fr)); }
+      table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+      th, td { border-bottom: 1px solid rgba(255,255,255,0.12); padding: 0.4rem 0.3rem; text-align: left; }
+      th.sortable { cursor: pointer; color: #d7e7ff; }
+      .status-young { color: #ffd37d; }
+      .status-active { color: #8df7c4; }
+      .status-breeding { color: #99c8ff; }
+      .list { max-height: 260px; overflow: auto; }
+      .event-log { max-height: 220px; overflow: auto; font-size: 0.88rem; }
+      .tutorial {
+        position: fixed; inset: 0; background: rgba(2,8,20,0.72);
+        display: none; align-items: center; justify-content: center; z-index: 50;
       }
-
-      @media (max-width: 980px) {
-        .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .grid { grid-template-columns: 1fr; }
+      .tutorial.show { display: flex; }
+      .tutorial-card {
+        width: min(720px, 92vw);
+        background: linear-gradient(180deg, #1a4d96, #133b76);
+        border-radius: 18px; border: 1px solid rgba(255,255,255,0.2); padding: 1rem;
       }
-
-      @media (max-width: 560px) {
-        .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      @media (max-width: 1060px) {
+        .tabs { grid-template-columns: repeat(4,minmax(0,1fr)); }
+        .grid, .grid-3, .form-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
-    <main class="app">
+    <div class="tutorial" id="tutorialOverlay">
+      <div class="tutorial-card">
+        <h2>Welcome to Horse Business Sim</h2>
+        <ul>
+          <li>Use tabs to manage horses, staff, sales, auctions, barn, veterinary, and finance.</li>
+          <li>Add horses/staff, buy NPC horses, run auctions, and advance years.</li>
+          <li>All data is automatically saved in your browser (localStorage).</li>
+        </ul>
+        <button class="btn-primary" id="closeTutorial">Start Sim</button>
+      </div>
+    </div>
+
+    <main class="container">
       <section class="shell">
-        <header class="top">
-          <h1>Horse Business Sim</h1>
-          <p class="sub">Clickable management tabs. No long-page lore text.</p>
+        <header class="topbar">
+          <div>
+            <h1 class="title">Horse Business Management Sim</h1>
+            <div class="muted">Interactive browser simulation • persistent save</div>
+          </div>
+          <div class="kpis">
+            <span class="pill" id="kpiYear"></span>
+            <span class="pill" id="kpiCash"></span>
+            <span class="pill" id="kpiRep"></span>
+            <span class="pill" id="kpiDebt"></span>
+          </div>
+          <div class="btn-row">
+            <button class="btn-warn" id="advanceYearBtn">Advance Year</button>
+            <button id="resetDataBtn">Reset Save</button>
+          </div>
         </header>
 
-        <nav class="tabs" aria-label="Main game tabs">
-          <button class="tab active" data-target="horses">🐎 Horses</button>
-          <button class="tab" data-target="staff">👩‍🌾 Staff</button>
-          <button class="tab" data-target="sales">💼 Sales</button>
-          <button class="tab" data-target="auctions">🏷 Auctions</button>
-          <button class="tab" data-target="barn">🏗 Barn</button>
-          <button class="tab" data-target="vet">🏥 Veterinary</button>
+        <nav class="tabs" id="tabsNav">
+          <button class="tab active" data-tab="horses">Horses</button>
+          <button class="tab" data-tab="staff">Staff</button>
+          <button class="tab" data-tab="sales">Sales</button>
+          <button class="tab" data-tab="auctions">Auctions</button>
+          <button class="tab" data-tab="barn">Barn</button>
+          <button class="tab" data-tab="vet">Veterinary</button>
+          <button class="tab" data-tab="finance">Finance</button>
+          <button class="tab" data-tab="help">Help</button>
         </nav>
 
-        <section class="panel active" id="horses">
-          <div class="grid">
-            <article class="card">
-              <h2>Status Buckets</h2>
-              <div class="pill-row">
-                <span class="pill">🟢 Active (3+)</span>
-                <span class="pill">🟡 Young (1–3)</span>
-                <span class="pill">🔵 Breeding</span>
+        <section class="content">
+          <article class="panel active" id="panel-horses">
+            <div class="grid">
+              <div class="card">
+                <h2>Add / Edit Horse</h2>
+                <form id="horseForm" class="form-grid">
+                  <input type="hidden" id="horseId" />
+                  <div><label>Name</label><input id="horseName" required /></div>
+                  <div><label>Age</label><input id="horseAge" type="number" min="1" max="30" required /></div>
+                  <div><label>Gender</label><select id="horseGender"><option>Mare</option><option>Stallion</option><option>Gelding</option></select></div>
+                  <div><label>Discipline</label><select id="horseDiscipline"><option>Showjumping</option><option>Dressage</option><option>Eventing</option></select></div>
+                  <div><label>Status</label><select id="horseStatus"><option>Young</option><option>Active</option><option>Breeding</option></select></div>
+                  <div><label>Winnings (€)</label><input id="horseWinnings" type="number" value="0" min="0" /></div>
+                  <div><label>Conformation</label><input id="sConformation" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Movement</label><input id="sMovement" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Scope</label><input id="sScope" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Rideability</label><input id="sRideability" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Temperament</label><input id="sTemperament" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Soundness</label><input id="sSoundness" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Bloodline Prestige</label><input id="sBloodline" type="number" min="1" max="10" value="6" /></div>
+                  <div class="btn-row" style="grid-column: 1/-1;">
+                    <button class="btn-primary" type="submit">Save Horse</button>
+                    <button type="button" id="clearHorseForm">Clear</button>
+                  </div>
+                </form>
               </div>
-            </article>
-            <article class="card">
-              <h2>Horse Stats</h2>
-              <table class="table">
-                <tr><th>Stat</th><th>Range</th></tr>
-                <tr><td>Conformation</td><td>1–10</td></tr>
-                <tr><td>Movement</td><td>1–10</td></tr>
-                <tr><td>Scope</td><td>1–10</td></tr>
-                <tr><td>Rideability</td><td>1–10</td></tr>
-                <tr><td>Temperament</td><td>1–10</td></tr>
-                <tr><td>Soundness</td><td>1–10</td></tr>
-                <tr><td>Bloodline Prestige</td><td>1–10</td></tr>
-              </table>
-            </article>
-            <article class="card">
-              <h2>Core Formula</h2>
-              <ul>
-                <li>Quality = (Conformation + Discipline Stat + Rideability) ÷ 3</li>
-                <li>Dressage → Movement</li>
-                <li>Showjumping → Scope</li>
-                <li>Eventing → Avg(Movement, Scope)</li>
-              </ul>
-            </article>
-          </div>
-        </section>
-
-        <section class="panel" id="staff">
-          <div class="grid">
-            <article class="card">
-              <h2>Team Roles</h2>
-              <div class="pill-row">
-                <span class="pill">Stable Worker</span><span class="pill">Pro Rider</span>
-                <span class="pill">Breeding Manager</span><span class="pill">Sales Director</span>
-                <span class="pill">Veterinarian</span><span class="pill">Barn Manager</span>
+              <div class="card">
+                <h2>Horse Lists</h2>
+                <div class="muted">Click headers to sort</div>
+                <div class="list">
+                  <h3>Young (1–3)</h3><table id="youngTable"></table>
+                  <h3>Active (3+)</h3><table id="activeTable"></table>
+                  <h3>Breeding</h3><table id="breedingTable"></table>
+                </div>
               </div>
-            </article>
-            <article class="card">
-              <h2>Attributes</h2>
-              <ul>
-                <li>Skill • Experience • Loyalty</li>
-                <li>Reputation • Work Ethic • Demandingness</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Risk</h2>
-              <ul>
-                <li>Loyalty &lt; 4 → resignation risk</li>
-                <li>High Demandingness → salary events</li>
-                <li>High Reputation → poaching risk</li>
-              </ul>
-            </article>
-          </div>
-        </section>
+            </div>
+          </article>
 
-        <section class="panel" id="sales">
-          <div class="grid">
-            <article class="card">
-              <h2>Pricing Drivers</h2>
-              <ul>
-                <li>Conformation, Movement, Scope</li>
-                <li>Rideability, Temperament, Soundness</li>
-                <li>Bloodline Prestige</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Formula</h2>
-              <ul>
-                <li>Base Price = (Conformation + Primary Stat + Bloodline) × Market Multiplier</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Flow</h2>
-              <ul><li>Buy from NPC → moves to Active Horses</li></ul>
-            </article>
-          </div>
-        </section>
-
-        <section class="panel" id="auctions">
-          <div class="grid">
-            <article class="card">
-              <h2>Listing</h2>
-              <ul>
-                <li>Up to 30 horses</li>
-                <li>Start / Reserve / Discipline / Marketing</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Bidding Inputs</h2>
-              <ul>
-                <li>Horse Quality</li>
-                <li>Reputation</li>
-                <li>Market Condition</li>
-                <li>Discipline Demand</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Rules</h2>
-              <ul>
-                <li>Commission: 5–10%</li>
-                <li>Wins attract more bidders</li>
-                <li>Reputation &gt; 400 unlocks international buyers</li>
-              </ul>
-            </article>
-          </div>
-        </section>
-
-        <section class="panel" id="barn">
-          <div class="grid">
-            <article class="card">
-              <h2>Facilities</h2>
-              <table class="table">
-                <tr><th>Facility</th><th>Cost</th></tr>
-                <tr><td>Basic Stable</td><td>€60,000</td></tr>
-                <tr><td>Professional Stable</td><td>€140,000</td></tr>
-                <tr><td>Elite Stable</td><td>€300,000</td></tr>
-                <tr><td>Indoor Arena</td><td>€120,000</td></tr>
-                <tr><td>Breeding Wing</td><td>€50,000</td></tr>
-                <tr><td>Vet Station</td><td>€40,000</td></tr>
-              </table>
-            </article>
-            <article class="card">
-              <h2>Upgrades</h2>
-              <div class="pill-row">
-                <span class="pill">Horse Walker</span><span class="pill">Solarium</span>
-                <span class="pill">Turnout</span><span class="pill">Staff Housing</span>
-                <span class="pill">Security</span><span class="pill">Tracks</span>
+          <article class="panel" id="panel-staff">
+            <div class="grid">
+              <div class="card">
+                <h2>Hire / Update Staff</h2>
+                <form id="staffForm" class="form-grid">
+                  <input type="hidden" id="staffId" />
+                  <div><label>Name</label><input id="staffName" required /></div>
+                  <div><label>Gender</label><select id="staffGender"><option>Female</option><option>Male</option><option>Other</option></select></div>
+                  <div><label>Age</label><input id="staffAge" type="number" min="18" max="80" value="30" /></div>
+                  <div><label>Role</label><select id="staffRole"><option>Stable Worker</option><option>Professional Rider</option><option>Breeding Manager</option><option>Sales Director</option><option>Veterinarian</option><option>Barn Manager</option></select></div>
+                  <div><label>Skill Level</label><input id="staffSkill" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Experience (years)</label><input id="staffExperience" type="number" min="0" max="50" value="5" /></div>
+                  <div><label>Loyalty</label><input id="staffLoyalty" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Reputation</label><input id="staffReputation" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Work Ethic</label><input id="staffWorkEthic" type="number" min="1" max="10" value="6" /></div>
+                  <div><label>Demandingness</label><input id="staffDemanding" type="number" min="1" max="10" value="5" /></div>
+                  <div><label>Salary (€)</label><input id="staffSalary" type="number" min="0" value="35000" /></div>
+                  <div class="btn-row" style="grid-column: 1/-1;">
+                    <button class="btn-primary" type="submit">Save Staff</button>
+                    <button type="button" id="clearStaffForm">Clear</button>
+                  </div>
+                </form>
               </div>
-            </article>
-            <article class="card">
-              <h2>Maintenance</h2>
-              <ul><li>Yearly cost = 3% of total facility cost</li></ul>
-            </article>
-          </div>
-        </section>
-
-        <section class="panel" id="vet">
-          <div class="grid">
-            <article class="card">
-              <h2>Services</h2>
-              <ul>
-                <li>Artificial Insemination</li>
-                <li>Take Vials</li>
-                <li>Live Insemination</li>
-                <li>Check-Up</li>
-                <li>Heal Injury</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Injury Risk</h2>
-              <ul>
-                <li>Risk = Base Risk − Staff Bonus − Facility Bonus</li>
-                <li>Factors: soundness, fatigue, competition, staff quality</li>
-              </ul>
-            </article>
-            <article class="card">
-              <h2>Shared Sim Systems</h2>
-              <div class="pill-row">
-                <span class="pill">Cash</span><span class="pill">Reputation</span>
-                <span class="pill">Horse Stats</span><span class="pill">Market</span>
-                <span class="pill">Annual Events</span>
+              <div class="card">
+                <h2>Staff List</h2>
+                <div class="muted">Sortable by Name, Role, Skill, Salary</div>
+                <table id="staffTable"></table>
               </div>
-            </article>
-          </div>
+            </div>
+          </article>
+
+          <article class="panel" id="panel-sales">
+            <div class="card">
+              <h2>NPC Horse Market</h2>
+              <div id="salesList" class="grid-3"></div>
+            </div>
+          </article>
+
+          <article class="panel" id="panel-auctions">
+            <div class="grid">
+              <div class="card">
+                <h2>Start Auction</h2>
+                <div class="form-grid">
+                  <div><label>Horse</label><select id="auctionHorseSelect"></select></div>
+                  <div><label>Starting Price (€)</label><input id="auctionStartPrice" type="number" value="20000" min="0" /></div>
+                  <div><label>Reserve Price (€)</label><input id="auctionReservePrice" type="number" value="30000" min="0" /></div>
+                  <div><label>Duration (days)</label><input id="auctionDuration" type="number" value="7" min="1" max="30" /></div>
+                </div>
+                <div class="btn-row" style="margin-top:0.6rem;"><button class="btn-primary" id="startAuctionBtn">Start Auction</button></div>
+              </div>
+              <div class="card">
+                <h2>Auction Results</h2>
+                <div class="event-log" id="auctionLog"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel" id="panel-barn">
+            <div class="card">
+              <h2>Facilities & Upgrades</h2>
+              <table id="barnTable"></table>
+            </div>
+          </article>
+
+          <article class="panel" id="panel-vet">
+            <div class="grid">
+              <div class="card">
+                <h2>Veterinary Actions</h2>
+                <div><label>Select Horse</label><select id="vetHorseSelect"></select></div>
+                <div class="btn-row" style="margin-top:0.6rem;">
+                  <button id="btnCheckup">Check-up (€200)</button>
+                  <button id="btnHeal">Heal Injury (€1200)</button>
+                  <button id="btnAI">Artificial Insemination (€800)</button>
+                  <button id="btnVials">Take Stallion Vials (+€400)</button>
+                </div>
+              </div>
+              <div class="card">
+                <h2>Vet Log</h2>
+                <div class="event-log" id="vetLog"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel" id="panel-finance">
+            <div class="grid">
+              <div class="card">
+                <h2>Finance Overview</h2>
+                <ul>
+                  <li id="finCash"></li>
+                  <li id="finPL"></li>
+                  <li id="finRep"></li>
+                  <li id="finDebt"></li>
+                  <li id="finCap"></li>
+                </ul>
+              </div>
+              <div class="card">
+                <h2>Annual Report</h2>
+                <div class="event-log" id="annualReport"></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel" id="panel-help">
+            <div class="card">
+              <h2>Formula Help</h2>
+              <ul>
+                <li><strong>Overall Quality:</strong> (Conformation + DisciplineStat + Rideability) / 3</li>
+                <li><strong>DisciplineStat:</strong> Dressage=Movement, Showjumping=Scope, Eventing=(Movement+Scope)/2</li>
+                <li><strong>Sale Value:</strong> (Quality × AgeBase + WinningsBonus) × ReputationMultiplier × MarketMultiplier</li>
+                <li><strong>Reputation Multiplier:</strong> 1 + (Reputation / 150)</li>
+                <li><strong>Competition Effect:</strong> yearly random winnings + rep changes for active horses</li>
+                <li><strong>Veterinary Effect:</strong> checkup reveals injury, heal improves soundness, AI chance boosted by Breeding Wing</li>
+                <li><strong>Facility Bonus:</strong> Breeding Wing + fertility, Vet Station - emergency/vet pressure, arena boosts training gains</li>
+              </ul>
+            </div>
+          </article>
         </section>
       </section>
     </main>
 
     <script>
-      const tabs = document.querySelectorAll('.tab');
-      const panels = document.querySelectorAll('.panel');
+      const STORE_KEY = 'horseBusinessSim_v2';
+      const INTRO_KEY = 'horseBusinessSim_intro_seen';
 
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const targetId = tab.dataset.target;
-          tabs.forEach((t) => t.classList.remove('active'));
-          panels.forEach((p) => p.classList.remove('active'));
-          tab.classList.add('active');
-          const panel = document.getElementById(targetId);
-          if (panel) panel.classList.add('active');
-        });
+      const defaultState = () => ({
+        year: 1,
+        cash: 250000,
+        reputation: 20,
+        debt: 50000,
+        profitLoss: 0,
+        nextId: 1,
+        horses: [],
+        staff: [],
+        facilities: {
+          basicStable: { name: 'Basic Stable', cost: 60000, capacityPerLevel: 8, level: 1 },
+          professionalStable: { name: 'Professional Stable', cost: 140000, capacityPerLevel: 8, level: 0 },
+          eliteStable: { name: 'Elite Stable', cost: 300000, capacityPerLevel: 16, level: 0 },
+          indoorArena: { name: 'Indoor Arena', cost: 120000, capacityPerLevel: 0, level: 0 },
+          breedingWing: { name: 'Breeding Wing', cost: 50000, capacityPerLevel: 0, level: 0 },
+          vetStation: { name: 'Vet Station', cost: 40000, capacityPerLevel: 0, level: 0 }
+        },
+        salesPool: [],
+        auctionHistory: [],
+        eventLog: [],
+        vetLog: [],
+        annualReports: [],
+        sort: { horsesBy: 'name', horsesDir: 'asc', staffBy: 'name', staffDir: 'asc' }
       });
+
+      let state = loadState();
+
+      function loadState() {
+        const saved = localStorage.getItem(STORE_KEY);
+        if (!saved) return initNewState();
+        try {
+          const parsed = JSON.parse(saved);
+          return { ...defaultState(), ...parsed };
+        } catch {
+          return initNewState();
+        }
+      }
+
+      function initNewState() {
+        const s = defaultState();
+        s.horses = [
+          createHorse({ name: 'Asterix', age: 2, gender: 'Mare', discipline: 'Dressage', status: 'Young', winnings: 0, conformation: 7, movement: 8, scope: 5, rideability: 7, temperament: 7, soundness: 8, bloodline: 7 }, s),
+          createHorse({ name: 'Borealis', age: 5, gender: 'Stallion', discipline: 'Showjumping', status: 'Active', winnings: 18000, conformation: 7, movement: 6, scope: 8, rideability: 7, temperament: 6, soundness: 7, bloodline: 8 }, s)
+        ];
+        s.salesPool = generateSalesPool(6);
+        saveState(s);
+        return s;
+      }
+
+      function saveState(s = state) { localStorage.setItem(STORE_KEY, JSON.stringify(s)); }
+      function id() { return state.nextId++; }
+      function clamp(v, min, max) { return Math.max(min, Math.min(max, Number(v) || min)); }
+      function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      function money(v) { return `€${Math.round(v).toLocaleString()}`; }
+
+      function createHorse(data, target = state) {
+        const horse = {
+          id: target.nextId++,
+          name: data.name,
+          age: clamp(data.age, 1, 30),
+          gender: data.gender,
+          discipline: data.discipline,
+          status: data.status,
+          winnings: Number(data.winnings || 0),
+          stats: {
+            conformation: clamp(data.conformation, 1, 10),
+            movement: clamp(data.movement, 1, 10),
+            scope: clamp(data.scope, 1, 10),
+            rideability: clamp(data.rideability, 1, 10),
+            temperament: clamp(data.temperament, 1, 10),
+            soundness: clamp(data.soundness, 1, 10),
+            bloodline: clamp(data.bloodline, 1, 10)
+          },
+          injured: false
+        };
+        horse.quality = calcQuality(horse);
+        return horse;
+      }
+
+      function disciplineStat(h) {
+        if (h.discipline === 'Dressage') return h.stats.movement;
+        if (h.discipline === 'Showjumping') return h.stats.scope;
+        return (h.stats.movement + h.stats.scope) / 2;
+      }
+      function calcQuality(h) { return Number(((h.stats.conformation + disciplineStat(h) + h.stats.rideability) / 3).toFixed(2)); }
+      function repMultiplier() { return 1 + (state.reputation / 150); }
+      function marketMultiplier() { return 0.85 + (Math.sin(state.year) + 1) / 3; }
+      function saleValue(h) {
+        const ageBase = h.age <= 1 ? 4000 : h.age <= 3 ? 10000 : 18000;
+        const winningsBonus = (h.winnings || 0) * 0.35;
+        return Math.round((h.quality * ageBase + winningsBonus) * repMultiplier() * marketMultiplier());
+      }
+      function totalCapacity() {
+        const f = state.facilities;
+        return f.basicStable.level * f.basicStable.capacityPerLevel + f.professionalStable.level * f.professionalStable.capacityPerLevel + f.eliteStable.level * f.eliteStable.capacityPerLevel;
+      }
+
+      function generateSalesPool(n = 6) {
+        const names = ['Quartz', 'Nimbus', 'Valentino', 'Mistral', 'Eclipse', 'Fjord', 'Riviera', 'Maximus'];
+        const discs = ['Showjumping', 'Dressage', 'Eventing'];
+        return Array.from({ length: n }).map((_, i) => {
+          const horse = createHorse({
+            name: `${names[rand(0,names.length-1)]}-${rand(10,99)}${i}`,
+            age: rand(2,8),
+            gender: ['Mare','Stallion','Gelding'][rand(0,2)],
+            discipline: discs[rand(0,2)],
+            status: 'Active',
+            winnings: rand(0,50000),
+            conformation: rand(4,10), movement: rand(4,10), scope: rand(4,10),
+            rideability: rand(4,10), temperament: rand(4,10), soundness: rand(4,10), bloodline: rand(4,10)
+          }, { nextId: 1 });
+          horse.price = saleValue(horse);
+          return horse;
+        });
+      }
+
+      function setTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+        document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+      }
+
+      document.getElementById('tabsNav').addEventListener('click', (e) => {
+        if (!e.target.classList.contains('tab')) return;
+        setTab(e.target.dataset.tab);
+      });
+
+      function renderTop() {
+        document.getElementById('kpiYear').textContent = `Year: ${state.year}`;
+        document.getElementById('kpiCash').textContent = `Cash: ${money(state.cash)}`;
+        document.getElementById('kpiRep').textContent = `Reputation: ${state.reputation}`;
+        document.getElementById('kpiDebt').textContent = `Debt: ${money(state.debt)}`;
+      }
+
+      function sortItems(items, by, dir) {
+        const sorted = [...items].sort((a,b)=>{
+          const va = by.includes('.') ? by.split('.').reduce((obj,key)=>obj[key], a) : a[by];
+          const vb = by.includes('.') ? by.split('.').reduce((obj,key)=>obj[key], b) : b[by];
+          if (typeof va === 'string') return va.localeCompare(vb);
+          return (va ?? 0) - (vb ?? 0);
+        });
+        return dir === 'asc' ? sorted : sorted.reverse();
+      }
+
+      function horseRow(h) {
+        return `<tr>
+          <td>${h.name}</td><td>${h.age}</td><td>${h.discipline}</td><td>${h.quality}</td><td>${money(saleValue(h))}</td>
+          <td><button data-edit-horse="${h.id}">Edit</button> <button class="btn-danger" data-del-horse="${h.id}">Del</button></td>
+        </tr>`;
+      }
+
+      function renderHorseTables() {
+        state.horses.forEach(h => h.quality = calcQuality(h));
+        const sorted = sortItems(state.horses, state.sort.horsesBy, state.sort.horsesDir);
+        const young = sorted.filter(h => h.status === 'Young');
+        const active = sorted.filter(h => h.status === 'Active');
+        const breeding = sorted.filter(h => h.status === 'Breeding');
+        const head = `<thead><tr><th class="sortable" data-sort-horse="name">Name</th><th class="sortable" data-sort-horse="age">Age</th><th>Disc</th><th class="sortable" data-sort-horse="quality">Q</th><th>Value</th><th>Actions</th></tr></thead>`;
+        document.getElementById('youngTable').innerHTML = head + `<tbody>${young.map(horseRow).join('')}</tbody>`;
+        document.getElementById('activeTable').innerHTML = head + `<tbody>${active.map(horseRow).join('')}</tbody>`;
+        document.getElementById('breedingTable').innerHTML = head + `<tbody>${breeding.map(horseRow).join('')}</tbody>`;
+        populateHorseSelects();
+      }
+
+      function populateHorseSelects() {
+        const activeOptions = state.horses.filter(h => h.status === 'Active').map(h => `<option value="${h.id}">${h.name} (${h.quality})</option>`).join('');
+        document.getElementById('auctionHorseSelect').innerHTML = activeOptions || '<option value="">No active horses</option>';
+        const allOptions = state.horses.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
+        document.getElementById('vetHorseSelect').innerHTML = allOptions || '<option value="">No horses</option>';
+      }
+
+      function fillHorseForm(h) {
+        horseId.value = h.id; horseName.value = h.name; horseAge.value = h.age; horseGender.value = h.gender;
+        horseDiscipline.value = h.discipline; horseStatus.value = h.status; horseWinnings.value = h.winnings;
+        sConformation.value = h.stats.conformation; sMovement.value = h.stats.movement; sScope.value = h.stats.scope;
+        sRideability.value = h.stats.rideability; sTemperament.value = h.stats.temperament; sSoundness.value = h.stats.soundness; sBloodline.value = h.stats.bloodline;
+      }
+
+      function clearHorseForm() { document.getElementById('horseForm').reset(); horseId.value = ''; }
+
+      horseForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const payload = {
+          name: horseName.value.trim(), age: horseAge.value, gender: horseGender.value, discipline: horseDiscipline.value,
+          status: horseStatus.value, winnings: horseWinnings.value,
+          conformation: sConformation.value, movement: sMovement.value, scope: sScope.value, rideability: sRideability.value,
+          temperament: sTemperament.value, soundness: sSoundness.value, bloodline: sBloodline.value
+        };
+        if (!payload.name) return;
+        if (horseId.value) {
+          const idx = state.horses.findIndex(h => h.id === Number(horseId.value));
+          if (idx > -1) state.horses[idx] = { ...state.horses[idx], ...createHorse(payload, { nextId: state.nextId }) , id: state.horses[idx].id};
+        } else {
+          if (state.horses.length >= totalCapacity()) return alert('Not enough stable capacity. Upgrade barn first.');
+          state.horses.push(createHorse(payload));
+        }
+        saveState(); clearHorseForm(); renderAll();
+      });
+
+      clearHorseForm.addEventListener('click', clearHorseForm);
+
+      document.getElementById('panel-horses').addEventListener('click', (e)=>{
+        const editId = e.target.dataset.editHorse;
+        const delId = e.target.dataset.delHorse;
+        const sortKey = e.target.dataset.sortHorse;
+        if (sortKey) {
+          if (state.sort.horsesBy === sortKey) state.sort.horsesDir = state.sort.horsesDir === 'asc' ? 'desc' : 'asc';
+          state.sort.horsesBy = sortKey; saveState(); renderHorseTables(); return;
+        }
+        if (editId) {
+          const h = state.horses.find(x => x.id === Number(editId));
+          if (h) fillHorseForm(h);
+        }
+        if (delId) {
+          state.horses = state.horses.filter(h => h.id !== Number(delId));
+          saveState(); renderAll();
+        }
+      });
+
+      function renderStaff() {
+        const sorted = sortItems(state.staff, state.sort.staffBy, state.sort.staffDir);
+        const head = `<thead><tr>
+          <th class="sortable" data-sort-staff="name">Name</th><th class="sortable" data-sort-staff="role">Role</th>
+          <th class="sortable" data-sort-staff="skill">Skill</th><th class="sortable" data-sort-staff="salary">Salary</th><th>Actions</th></tr></thead>`;
+        const body = sorted.map(s => `<tr><td>${s.name}</td><td>${s.role}</td><td>${s.skill}</td><td>${money(s.salary)}</td>
+        <td><button data-edit-staff="${s.id}">Edit</button> <button class="btn-danger" data-del-staff="${s.id}">Fire</button></td></tr>`).join('');
+        document.getElementById('staffTable').innerHTML = head + `<tbody>${body}</tbody>`;
+      }
+
+      function fillStaffForm(s) {
+        staffId.value = s.id; staffName.value = s.name; staffGender.value = s.gender; staffAge.value = s.age; staffRole.value = s.role;
+        staffSkill.value = s.skill; staffExperience.value = s.experience; staffLoyalty.value = s.loyalty; staffReputation.value = s.reputation;
+        staffWorkEthic.value = s.workEthic; staffDemanding.value = s.demandingness; staffSalary.value = s.salary;
+      }
+      function clearStaffFormFn(){ document.getElementById('staffForm').reset(); staffId.value=''; }
+
+      staffForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        const obj = {
+          id: staffId.value ? Number(staffId.value) : id(),
+          name: staffName.value.trim(), gender: staffGender.value, age: Number(staffAge.value), role: staffRole.value,
+          skill: clamp(staffSkill.value,1,10), experience: Number(staffExperience.value), loyalty: clamp(staffLoyalty.value,1,10),
+          reputation: clamp(staffReputation.value,1,10), workEthic: clamp(staffWorkEthic.value,1,10), demandingness: clamp(staffDemanding.value,1,10), salary: Number(staffSalary.value)
+        };
+        if (!obj.name) return;
+        const idx = state.staff.findIndex(s => s.id === obj.id);
+        if (idx > -1) state.staff[idx] = obj; else state.staff.push(obj);
+        saveState(); clearStaffFormFn(); renderAll();
+      });
+      clearStaffForm.addEventListener('click', clearStaffFormFn);
+
+      document.getElementById('panel-staff').addEventListener('click', (e)=>{
+        const sKey = e.target.dataset.sortStaff;
+        if (sKey) {
+          if (state.sort.staffBy === sKey) state.sort.staffDir = state.sort.staffDir === 'asc' ? 'desc' : 'asc';
+          state.sort.staffBy = sKey; saveState(); renderStaff(); return;
+        }
+        if (e.target.dataset.editStaff) {
+          const st = state.staff.find(x => x.id === Number(e.target.dataset.editStaff)); if (st) fillStaffForm(st);
+        }
+        if (e.target.dataset.delStaff) {
+          state.staff = state.staff.filter(s => s.id !== Number(e.target.dataset.delStaff));
+          saveState(); renderAll();
+        }
+      });
+
+      function renderSales() {
+        if (!state.salesPool.length) state.salesPool = generateSalesPool(6);
+        const html = state.salesPool.map(h => `<div class="card"><h3>${h.name}</h3>
+          <div>${h.age}y • ${h.gender} • ${h.discipline}</div>
+          <div>Winnings: ${money(h.winnings)}</div>
+          <div>Quality: ${h.quality}</div>
+          <div><strong>Price: ${money(h.price)}</strong></div>
+          <button class="btn-primary" data-buy="${h.id}">Buy</button></div>`).join('');
+        document.getElementById('salesList').innerHTML = html;
+      }
+      document.getElementById('salesList').addEventListener('click', (e)=>{
+        const buyId = e.target.dataset.buy; if (!buyId) return;
+        const idx = state.salesPool.findIndex(h => h.id === Number(buyId));
+        if (idx < 0) return;
+        const horse = state.salesPool[idx];
+        if (state.cash < horse.price) return alert('Not enough cash.');
+        if (state.horses.length >= totalCapacity()) return alert('Not enough stable capacity.');
+        state.cash -= horse.price; state.profitLoss -= horse.price;
+        horse.id = id(); horse.status = 'Active';
+        state.horses.push(horse);
+        state.salesPool.splice(idx,1);
+        state.eventLog.unshift(`Bought ${horse.name} for ${money(horse.price)}.`);
+        saveState(); renderAll();
+      });
+
+      function auctionSim(horse, start, reserve, duration) {
+        const bidderCount = rand(2, 6) + Math.floor(state.reputation / 200) + (horse.winnings > 20000 ? 1 : 0);
+        let highest = start;
+        for (let i = 0; i < bidderCount; i++) {
+          const bid = Math.round(start + saleValue(horse) * (0.6 + Math.random() * 0.8));
+          if (bid > highest) highest = bid;
+        }
+        const win = highest >= reserve;
+        if (win) {
+          const feeRate = 0.07;
+          const net = Math.round(highest * (1 - feeRate));
+          state.cash += net;
+          state.profitLoss += net;
+          state.horses = state.horses.filter(h => h.id !== horse.id);
+          state.reputation += 2;
+          return `✅ ${horse.name} sold in ${duration}d for ${money(highest)} (net ${money(net)}).`;
+        }
+        state.reputation = Math.max(0, state.reputation - 1);
+        return `❌ ${horse.name} reserve not met. Highest bid ${money(highest)}.`;
+      }
+
+      startAuctionBtn.addEventListener('click', ()=>{
+        const horseId = Number(auctionHorseSelect.value);
+        const horse = state.horses.find(h => h.id === horseId && h.status === 'Active');
+        if (!horse) return alert('Select an active horse.');
+        const result = auctionSim(horse, Number(auctionStartPrice.value), Number(auctionReservePrice.value), Number(auctionDuration.value));
+        state.auctionHistory.unshift(`Year ${state.year}: ${result}`);
+        saveState(); renderAll();
+      });
+
+      function renderAuction() { document.getElementById('auctionLog').innerHTML = state.auctionHistory.map(x => `<div>${x}</div>`).join('') || '<div class="muted">No auctions yet.</div>'; }
+
+      function renderBarn() {
+        const rows = Object.entries(state.facilities).map(([key, f]) => `<tr>
+          <td>${f.name}</td><td>${money(f.cost)}</td><td>${f.capacityPerLevel || '-'}</td><td>${f.level}</td>
+          <td><button data-upgrade="${key}">Upgrade</button></td></tr>`).join('');
+        document.getElementById('barnTable').innerHTML = `<thead><tr><th>Facility</th><th>Cost</th><th>Capacity+</th><th>Level</th><th>Action</th></tr></thead><tbody>${rows}</tbody>`;
+      }
+      barnTable.addEventListener('click', (e)=>{
+        const key = e.target.dataset.upgrade; if (!key) return;
+        const f = state.facilities[key];
+        if (state.cash < f.cost) return alert('Not enough cash for upgrade.');
+        state.cash -= f.cost; state.profitLoss -= f.cost; f.level += 1;
+        state.eventLog.unshift(`Upgraded ${f.name} to level ${f.level}.`);
+        saveState(); renderAll();
+      });
+
+      function selectedHorse() { return state.horses.find(h => h.id === Number(vetHorseSelect.value)); }
+      function vetLog(msg) { state.vetLog.unshift(`Year ${state.year}: ${msg}`); state.vetLog = state.vetLog.slice(0, 40); }
+
+      btnCheckup.addEventListener('click', ()=>{
+        const h = selectedHorse(); if (!h) return;
+        if (state.cash < 200) return alert('Not enough cash.');
+        state.cash -= 200; state.profitLoss -= 200;
+        const injuryFound = Math.random() < ((10 - h.stats.soundness) * 0.04);
+        h.injured = injuryFound || h.injured;
+        vetLog(`Check-up on ${h.name}: ${h.injured ? 'injury flagged' : 'clear'} .`);
+        saveState(); renderAll();
+      });
+
+      btnHeal.addEventListener('click', ()=>{
+        const h = selectedHorse(); if (!h) return;
+        if (!h.injured) return alert('Horse is not injured.');
+        if (state.cash < 1200) return alert('Not enough cash.');
+        state.cash -= 1200; state.profitLoss -= 1200;
+        h.injured = false; h.stats.soundness = clamp(h.stats.soundness + 1, 1, 10);
+        vetLog(`Healed ${h.name}. Soundness is now ${h.stats.soundness}.`);
+        saveState(); renderAll();
+      });
+
+      btnAI.addEventListener('click', ()=>{
+        const h = selectedHorse(); if (!h) return;
+        if (h.gender !== 'Mare') return alert('AI only for mares in this simulation.');
+        if (state.cash < 800) return alert('Not enough cash.');
+        state.cash -= 800; state.profitLoss -= 800;
+        const fertBonus = state.facilities.breedingWing.level * 0.1;
+        const success = Math.random() < (0.55 + fertBonus);
+        if (success && state.horses.length < totalCapacity()) {
+          const foal = createHorse({
+            name: `${h.name}-Foal-${rand(10,99)}`,
+            age: 1,
+            gender: ['Mare','Stallion'][rand(0,1)],
+            discipline: h.discipline,
+            status: 'Young',
+            winnings: 0,
+            conformation: clamp(h.stats.conformation + rand(-1,1),1,10),
+            movement: clamp(h.stats.movement + rand(-1,1),1,10),
+            scope: clamp(h.stats.scope + rand(-1,1),1,10),
+            rideability: clamp(h.stats.rideability + rand(-1,1),1,10),
+            temperament: clamp(h.stats.temperament + rand(-1,1),1,10),
+            soundness: clamp(h.stats.soundness + rand(-1,1),1,10),
+            bloodline: clamp(h.stats.bloodline + rand(0,1),1,10)
+          });
+          state.horses.push(foal);
+          vetLog(`AI success for ${h.name}. Foal ${foal.name} added.`);
+        } else vetLog(`AI attempt for ${h.name} unsuccessful.`);
+        saveState(); renderAll();
+      });
+
+      btnVials.addEventListener('click', ()=>{
+        const h = selectedHorse(); if (!h) return;
+        if (h.gender !== 'Stallion') return alert('Vials only from stallions.');
+        const gain = 400 + h.stats.bloodline * 30;
+        state.cash += gain; state.profitLoss += gain;
+        vetLog(`Collected vials from ${h.name}. Income ${money(gain)}.`);
+        saveState(); renderAll();
+      });
+
+      function renderVetLog() { document.getElementById('vetLog').innerHTML = state.vetLog.map(x => `<div>${x}</div>`).join('') || '<div class="muted">No vet actions yet.</div>'; }
+
+      function yearlyProgress() {
+        const f = state.facilities;
+        let deltaCash = 0;
+        let deltaRep = 0;
+
+        state.horses.forEach(h => {
+          h.age += 1;
+          if (h.status === 'Young' && h.age >= 3) h.status = 'Active';
+          if (h.status === 'Active') {
+            const staffBonus = state.staff.length ? state.staff.reduce((s,x)=>s+x.skill,0) / (state.staff.length*30) : 0;
+            const arenaBonus = f.indoorArena.level > 0 ? 0.08 : 0;
+            const gainChance = 0.35 + staffBonus + arenaBonus;
+            if (Math.random() < gainChance) {
+              const key = h.discipline === 'Dressage' ? 'movement' : h.discipline === 'Showjumping' ? 'scope' : (Math.random()>0.5?'movement':'scope');
+              h.stats[key] = clamp(h.stats[key] + 1, 1, 10);
+            }
+            const injuryRisk = Math.max(0.02, ((10 - h.stats.soundness) * 0.02) - (f.vetStation.level * 0.01));
+            if (Math.random() < injuryRisk) h.injured = true;
+            const winnings = rand(1000, 12000);
+            h.winnings += winnings;
+            deltaCash += winnings;
+            deltaRep += h.injured ? -1 : 1;
+          }
+          h.quality = calcQuality(h);
+        });
+
+        const salaryCost = state.staff.reduce((sum, s) => sum + s.salary, 0);
+        const maintenance = Math.round(Object.values(f).reduce((sum,x)=>sum + x.cost * x.level, 0) * 0.03);
+        const debtInterest = Math.round(state.debt * 0.05);
+        deltaCash -= salaryCost + maintenance + debtInterest;
+
+        const events = [
+          { txt: 'Market boom increased sale demand.', cash: 12000, rep: 2 },
+          { txt: 'Minor welfare complaint hurt reputation.', cash: -5000, rep: -8 },
+          { txt: 'International buyer visit increased reputation.', cash: 7000, rep: 10 },
+          { txt: 'Feed costs spiked this year.', cash: -9000, rep: 0 },
+          { txt: 'Local show wins boosted prestige.', cash: 4000, rep: 6 }
+        ];
+        const ev = events[rand(0, events.length - 1)];
+        deltaCash += ev.cash; deltaRep += ev.rep;
+        state.eventLog.unshift(`Year ${state.year}: ${ev.txt}`);
+
+        state.cash += deltaCash;
+        state.profitLoss = deltaCash;
+        state.reputation = Math.max(0, Math.min(1000, state.reputation + deltaRep));
+        state.year += 1;
+
+        state.salesPool = generateSalesPool(6);
+        state.annualReports.unshift(`Year ${state.year - 1} → P/L ${money(deltaCash)}, Reputation ${state.reputation}, Horses ${state.horses.length}, Staff ${state.staff.length}`);
+        state.annualReports = state.annualReports.slice(0, 20);
+
+        if (state.cash < 0) state.eventLog.unshift('⚠ Cash is negative. Reduce costs or increase sales.');
+        saveState(); renderAll();
+      }
+
+      advanceYearBtn.addEventListener('click', yearlyProgress);
+      resetDataBtn.addEventListener('click', ()=>{
+        if (!confirm('Reset all saved game data?')) return;
+        localStorage.removeItem(STORE_KEY);
+        localStorage.removeItem(INTRO_KEY);
+        state = initNewState();
+        renderAll();
+        tutorialOverlay.classList.add('show');
+      });
+
+      function renderFinance() {
+        finCash.textContent = `Cash balance: ${money(state.cash)}`;
+        finPL.textContent = `Profit/Loss this year: ${money(state.profitLoss)}`;
+        finRep.textContent = `Reputation score: ${state.reputation}`;
+        finDebt.textContent = `Loans & debt: ${money(state.debt)}`;
+        finCap.textContent = `Stable capacity: ${state.horses.length} / ${totalCapacity()}`;
+        annualReport.innerHTML = state.annualReports.map(r => `<div>${r}</div>`).join('') || '<div class="muted">No annual report yet.</div>';
+      }
+
+      function renderAll() {
+        renderTop();
+        renderHorseTables();
+        renderStaff();
+        renderSales();
+        renderAuction();
+        renderBarn();
+        renderVetLog();
+        renderFinance();
+        saveState();
+      }
+
+      document.getElementById('closeTutorial').addEventListener('click', ()=>{
+        tutorialOverlay.classList.remove('show');
+        localStorage.setItem(INTRO_KEY, '1');
+      });
+
+      if (!localStorage.getItem(INTRO_KEY)) tutorialOverlay.classList.add('show');
+      renderAll();
     </script>
   </body>
 </html>
