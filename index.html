@@ -3,679 +3,240 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Horse Business Management Sim</title>
+    <title>Stable Manager</title>
     <style>
-      :root {
-        --bg: #081f45;
-        --bg-2: #10356f;
-        --card: #123f82;
-        --card-soft: #0f3369;
-        --text: #eaf2ff;
-        --muted: #bfd2f4;
-        --accent: #67b0ff;
-        --danger: #ff7d7d;
-        --ok: #61d9a1;
-        --warn: #ffd37d;
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-        color: var(--text);
-        background: radial-gradient(circle at top, var(--bg-2), var(--bg) 60%);
-      }
-      .container { max-width: 1240px; margin: 1rem auto 2rem; padding: 0 1rem; }
-      .shell {
-        background: linear-gradient(180deg, #15478f, #123a74);
-        border: 1px solid rgba(255,255,255,0.14);
-        border-radius: 16px;
-        box-shadow: 0 14px 34px rgba(0,0,0,0.35);
-        overflow: hidden;
-      }
-      .topbar {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.9rem 1rem;
-        background: rgba(8, 26, 57, 0.35);
-      }
-      .kpis { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-      .pill {
-        background: rgba(255,255,255,0.09);
-        border: 1px solid rgba(255,255,255,0.18);
-        border-radius: 999px;
-        padding: 0.35rem 0.7rem;
-        font-size: 0.85rem;
-      }
-      .tabs { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 0.5rem; padding: 0.8rem 1rem; }
-      .tab {
-        border: 1px solid rgba(255,255,255,0.22);
-        border-radius: 999px;
-        background: #0d336d;
-        color: var(--text);
-        padding: 0.5rem 0.65rem;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      .tab.active { background: var(--accent); color: #07224f; border-color: transparent; }
-      .content { padding: 0 1rem 1rem; }
-      .panel { display: none; }
-      .panel.active { display: block; }
-      .grid { display: grid; gap: 0.8rem; grid-template-columns: repeat(2,minmax(0,1fr)); }
-      .grid-3 { display: grid; gap: 0.8rem; grid-template-columns: repeat(3,minmax(0,1fr)); }
-      .card {
-        background: linear-gradient(180deg, var(--card), var(--card-soft));
-        border: 1px solid rgba(255,255,255,0.13);
-        border-radius: 14px;
-        padding: 0.8rem;
-      }
-      button {
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.08);
-        color: var(--text);
-        padding: 0.45rem 0.55rem;
-        font-weight: 700;
-        cursor: pointer;
-      }
-      .btn-primary { background: var(--accent); color: #06214c; border-color: transparent; }
-      .btn-danger { background: var(--danger); color: #4b0808; border-color: transparent; }
-      .btn-ok { background: var(--ok); color: #083726; border-color: transparent; }
-      .btn-warn { background: var(--warn); color: #543d06; border-color: transparent; }
-      .muted { color: var(--muted); font-size: 0.9rem; }
-      .toolbar { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-      .row { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
-      table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-      th, td { border-bottom: 1px solid rgba(255,255,255,0.12); padding: 0.4rem 0.3rem; text-align: left; }
-      .log { max-height: 260px; overflow: auto; }
-      select, input {
-        border: 1px solid rgba(255,255,255,0.2);
-        border-radius: 10px;
-        background: rgba(255,255,255,0.08);
-        color: var(--text);
-        padding: 0.45rem 0.55rem;
-      }
-      @media (max-width: 980px) {
-        .tabs { grid-template-columns: repeat(3, minmax(0,1fr)); }
-        .grid, .grid-3 { grid-template-columns: 1fr; }
-      }
+      :root { --bg:#0d1b2a; --panel:#1b263b; --card:#24354d; --text:#edf2f4; --muted:#b7c4d4; --accent:#7cc6fe; --ok:#7bd389; --warn:#ffd166; --danger:#ff7f7f; }
+      *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+      .wrap{max-width:1250px;margin:12px auto;padding:0 12px}
+      .shell{background:var(--panel);border:1px solid #3c516a;border-radius:12px;overflow:hidden}
+      .top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:10px 12px;background:#152235}
+      .titleline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.title{font-size:1.35rem;font-weight:700}
+      .pill{background:#2a3d57;padding:6px 10px;border-radius:999px;font-size:.9rem;border:1px solid #3f5674}
+      .controls,.tabs,.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+      button{background:#324a69;color:var(--text);border:1px solid #4f6c90;border-radius:8px;padding:7px 10px;cursor:pointer}
+      .ok{background:var(--ok);color:#073017}.warn{background:var(--warn);color:#4f3b05}.danger{background:var(--danger);color:#500d0d}.accent{background:var(--accent);color:#03263f}
+      .tabs{padding:10px 12px;border-top:1px solid #36485f;border-bottom:1px solid #36485f}
+      .tab.active{outline:2px solid var(--accent)}
+      .content{padding:12px}
+      .panel{display:none}.panel.active{display:block}
+      .card{background:var(--card);border:1px solid #405873;border-radius:10px;padding:10px;margin-bottom:10px}
+      .row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+      .toggle-btn{width:100%;text-align:left;font-weight:700;margin:6px 0}
+      table{width:100%;border-collapse:collapse;font-size:.92rem} th,td{padding:6px;border-bottom:1px solid #425a75;text-align:left}
+      .hidden{display:none}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .muted{color:var(--muted);font-size:.9rem}.horse-line{cursor:pointer}
+      .details{white-space:pre-line;line-height:1.4}
+      @media(max-width:900px){.grid2{grid-template-columns:1fr}}
     </style>
   </head>
   <body>
-    <main class="container">
-      <section class="shell">
-        <header class="topbar">
-          <div>
-            <h1 style="margin:0;">Horse Business Management Sim</h1>
-            <div class="muted">Market + genetics driven horse business</div>
+    <div class="wrap">
+      <div class="shell">
+        <div class="top">
+          <div class="titleline">
+            <div class="title">Stable Manager</div>
+            <div class="pill" id="datePill"></div>
+            <div class="pill" id="moneyPill"></div>
+            <div class="pill" id="repPill"></div>
+            <button class="warn" id="skipMonth">Skip Month</button>
           </div>
-          <div class="kpis">
-            <span class="pill" id="kpiDate"></span>
-            <span class="pill" id="kpiCash"></span>
-            <span class="pill" id="kpiRep"></span>
-            <span class="pill" id="kpiMarket"></span>
+          <div class="controls">
+            <button id="loadGame">Load Game</button>
+            <button class="danger" id="resetGame">Reset Game</button>
+            <button class="ok" id="saveGame">Save Game</button>
           </div>
-          <div class="toolbar">
-            <button id="skipMonthBtn" class="btn-warn">Skip Month</button>
-            <button id="saveBtn">Save</button>
-            <button id="loadBtn">Load</button>
-            <button id="newGameBtn" class="btn-danger">New Game</button>
-          </div>
-        </header>
+        </div>
 
-        <nav class="tabs">
-          <button class="tab active" data-tab="horses">Horses</button>
-          <button class="tab" data-tab="sales">Sales</button>
+        <div class="tabs">
+          <button class="tab active" data-tab="horse">Horse tab</button>
           <button class="tab" data-tab="breeding">Breeding</button>
+          <button class="tab" data-tab="sale">Sale</button>
+          <button class="tab" data-tab="stable">Stable</button>
           <button class="tab" data-tab="staff">Staff</button>
-          <button class="tab" data-tab="barn">Barn</button>
-          <button class="tab" data-tab="finance">Finance</button>
-        </nav>
+          <button class="tab" data-tab="competition">Competition</button>
+        </div>
 
-        <section class="content">
-          <article class="panel active" id="panel-horses">
+        <div class="content">
+          <div class="panel active" id="horse-panel">
+            <button class="toggle-btn" data-target="active-box">Active</button>
+            <div class="card hidden" id="active-box"></div>
+            <button class="toggle-btn" data-target="retired-box">Retired</button>
+            <div class="card hidden" id="retired-box"></div>
+            <button class="toggle-btn" data-target="young-box">Young</button>
+            <div class="card hidden" id="young-box"></div>
             <div class="card">
-              <div class="row">
-                <h2 style="margin:0;">Player Horses</h2>
-                <div>
-                  <label for="horseFilter">Filter</label>
-                  <select id="horseFilter">
-                    <option value="All">All</option>
-                    <option value="Young">Young</option>
-                    <option value="Active">Active</option>
-                    <option value="Breeding">Breeding</option>
-                  </select>
-                </div>
-              </div>
-              <div id="horsesList" class="grid-3" style="margin-top:0.8rem;"></div>
+              <h3 style="margin:4px 0">Horse Details</h3>
+              <div id="horseDetails" class="details muted">Click any horse row to open full details.</div>
             </div>
-          </article>
+          </div>
 
-          <article class="panel" id="panel-sales">
+          <div class="panel" id="breeding-panel">
+            <div class="grid2">
+              <div class="card"><h3>Mares (Retired & Breedable)</h3><div id="mareList"></div></div>
+              <div class="card"><h3>Stallions (Retired & Breedable)</h3><div id="stallionList"></div></div>
+            </div>
             <div class="card">
-              <div class="row">
-                <h2 style="margin:0;">NPC Horse Market</h2>
-                <button id="refreshMarketBtn" class="btn-primary">Refresh Market</button>
+              <h3>Pair Breeding</h3>
+              <div class="toolbar">
+                <select id="mareSelect"></select>
+                <select id="stallionSelect"></select>
+                <button class="accent" id="breedBtn">Start Breeding</button>
               </div>
-              <div id="marketList" class="grid-3" style="margin-top:0.8rem;"></div>
+              <div class="muted">Pregnancy length is hidden (10–14 months). Mares max breeding age 18 with fertility-based chance.</div>
             </div>
-          </article>
+            <div class="card"><h3>Breeding Log</h3><div id="breedLog"></div></div>
+          </div>
 
-          <article class="panel" id="panel-breeding">
-            <div class="grid">
-              <div class="card">
-                <h2>Breeding Pairs</h2>
-                <div class="muted">Only horses in Breeding status can reproduce. One breeding per mare per year.</div>
-                <div id="breedingPairs" class="log" style="margin-top:0.8rem;"></div>
-              </div>
-              <div class="card">
-                <h2>Breeding Log</h2>
-                <div id="breedingLog" class="log"></div>
-              </div>
-            </div>
-          </article>
+          <div class="panel" id="sale-panel">
+            <div class="card row"><h3 style="margin:0">NPC Horse Sales</h3><button id="refreshSales">Refresh NPC Sales</button></div>
+            <div class="card"><div class="muted">Auto refresh every 1-4 months.</div><div id="salesList"></div></div>
+            <div class="card"><h3>NPC Studs</h3><div id="studList"></div></div>
+          </div>
 
-          <article class="panel" id="panel-staff">
-            <div class="card">
-              <h2>Staff</h2>
-              <div id="staffTableWrap"></div>
-            </div>
-          </article>
+          <div class="panel" id="stable-panel">
+            <div class="card"><h3>Reputation</h3><div id="stableRep"></div></div>
+            <div class="card"><h3>Infrastructure</h3><div id="facilityList"></div></div>
+            <div class="card"><h3>Global Market System</h3><div id="marketState"></div></div>
+          </div>
 
-          <article class="panel" id="panel-barn">
-            <div class="grid">
-              <div class="card">
-                <h2>Barn Capacity</h2>
-                <div id="barnSummary"></div>
-              </div>
-              <div class="card">
-                <h2>Event Log</h2>
-                <div id="eventLog" class="log"></div>
-              </div>
-            </div>
-          </article>
+          <div class="panel" id="staff-panel">
+            <button class="toggle-btn" data-target="staff-list-box">Staff list</button>
+            <div class="card hidden" id="staff-list-box"></div>
+          </div>
 
-          <article class="panel" id="panel-finance">
-            <div class="card">
-              <h2>Finance</h2>
-              <div id="financeSummary"></div>
-            </div>
-          </article>
-        </section>
-      </section>
-    </main>
+          <div class="panel" id="competition-panel">
+            <div class="card"><h3>Competition Sheets</h3><ul><li>Competition Calendar</li><li>Horse Performance Log</li><li>Prize Money Tracker</li><li>Fatigue Tracker</li><li>Discipline Ranking Sheet</li><li>International Points Table</li></ul></div>
+            <div class="card"><h3>Rules Summary</h3><div class="muted">Performance score uses discipline stat, soundness, temperament, rider skill, training modifier and random factor. Results boost value and reputation.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script>
-      const STORE_KEY = 'horseBusinessState_v3';
-      const STATS = ['conformation', 'movement', 'scope', 'rideability', 'temperament', 'soundness', 'bloodlinePrestige'];
-      const BREEDS = ['Warmblood', 'Thoroughbred', 'Hanoverian', 'Dutch Warmblood', 'Oldenburg'];
-      const DISCIPLINES = ['Dressage', 'Showjumping', 'Eventing'];
-      const MALE_NAMES = ['Atlas', 'Comet', 'Ranger', 'Noble', 'Zephyr', 'Orion'];
-      const FEMALE_NAMES = ['Aurora', 'Willow', 'Dahlia', 'Iris', 'Sable', 'Nova'];
+      const KEY = 'stableManagerSaveV1';
+      const f = (n)=>`$${Math.round(n).toLocaleString()}`;
+      const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+      const pick=(arr)=>arr[rand(0,arr.length-1)];
+      const breeds=['Warmblood','Hanoverian','Dutch Warmblood','Oldenburg','Thoroughbred'];
+      const facilities=[
+        {name:'Basic Stable (8 stalls)',cost:60000,capacity:8}, {name:'Professional Stable (16 stalls)',cost:140000,capacity:16}, {name:'Elite Stable (32 stalls)',cost:300000,capacity:32},
+        {name:'Indoor Arena',cost:120000,capacity:'Required for winter training'}, {name:'Breeding Wing',cost:50000,capacity:'+10% fertility'}, {name:'Vet Station',cost:40000,capacity:'-20% emergency cost'}
+      ];
+      const staffRoles=[
+        ['Stable Worker','€22,000–€35,000/year'],['Professional Rider','€40,000–€120,000/year'],['Breeding Manager','€45,000–€90,000/year'],['Sales & Marketing Director','€35,000–€80,000/year'],['On-Site Vet','€70,000–€150,000/year']
+      ];
 
-      class Horse {
-        constructor(data) {
-          this.id = data.id;
-          this.name = data.name;
-          this.age = data.age;
-          this.gender = data.gender;
-          this.breed = data.breed;
-          this.discipline = data.discipline;
-          this.status = data.status;
-          this.owner = data.owner;
-          this.stats = data.stats;
-          this.parentIds = data.parentIds || [];
-          this.fatigue = data.fatigue || 0;
-          this.injured = data.injured || false;
-          this.lastBredYear = data.lastBredYear || null;
+      let state;
+      function horseValue(h){
+        const base=(h.quality*10000);
+        const blood=1+(h.bloodline/20);
+        const temp=h.temperament<=3?0.7:h.temperament<=6?1.0:h.temperament<=8?1.1:1.2;
+        const ageM=h.age<=2?0.8:h.age<=6?1.2:h.age<=10?1:h.age<=14?0.7:0.4;
+        const pot={Limited:0.8,Standard:1,High:1.2,Elite:1.5,Exceptional:2}[h.potentialTier]||1;
+        return Math.round(base*blood*temp*ageM*pot*state.market.multiplier);
+      }
+      function ageStage(age){ if(age<=1)return'Foal'; if(age<=3)return'Young'; if(age<18)return age>=8?'Retired':'Active'; return 'Retired'; }
+      function qualityTier(x){return x<4?'Low':x<6?'Average':x<7.5?'Good':x<8.5?'High':'Elite';}
+      function levelTier(x){if(x<4)return'Green';if(x<6)return'Developing';if(x<7.5)return'Competitive';if(x<9)return'Advanced';if(x<11)return'Elite';return'Legendary';}
+      function mkHorse(id,name,gender,age,owned=true){
+        const con=+(Math.random()*8.9+1.1).toFixed(1), mov=+(Math.random()*8.9+1.1).toFixed(1), sc=+(Math.random()*8.9+1.1).toFixed(1), rid=+(Math.random()*8.9+1.1).toFixed(1);
+        const quality=+((con+Math.max(mov,sc)+rid)/3).toFixed(1);
+        const potentialAvg=+(Math.random()*6+5).toFixed(1);
+        const pTier=potentialAvg<6?'Limited':potentialAvg<7.5?'Standard':potentialAvg<9?'High':potentialAvg<10.5?'Elite':'Exceptional';
+        return {id,name,gender,age,breed:pick(breeds),quality,temperament:rand(1,10),soundness:rand(1,10),fertility:rand(50,90),conformation:con,movement:mov,scope:sc,rideability:rid,bloodline:rand(3,10),potentialAvg,potentialTier:pTier,owner:owned?'player':'npc',pregnant:false,pregnancyRemaining:0};
+      }
+      function initial(){
+        const horses=[mkHorse(1,'Aurora A12','Mare',9),mkHorse(2,'Atlas B44','Stallion',10),mkHorse(3,'Nova C88','Mare',2),mkHorse(4,'Comet D23','Stallion',5)];
+        horses[0].status='Retired';horses[1].status='Retired'; horses[2].status='Young'; horses[3].status='Active';
+        return {month:1,year:1,money:150000,reputation:120,nextId:20,horses,sales:[],studs:[],breedingLog:[],market:{state:'Stable',multiplier:1},nextSalesRefresh:rand(1,4),staff:[{name:'Elena Novak',gender:'F',assigned:4,skill:8,experience:9,salary:54000,loyalty:8,reputation:7,workEthic:9,demandingness:6}]};
+      }
+      function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+      function load(){const raw=localStorage.getItem(KEY); state=raw?JSON.parse(raw):initial(); if(!state.sales.length)refreshSales(); if(!state.studs.length)genStuds(); render();}
+      function reset(){state=initial(); refreshSales(); genStuds(); save(); render();}
+      function playerHorses(){return state.horses.filter(h=>h.owner==='player');}
+      function byStatus(s){return playerHorses().filter(h=>h.status===s || (!h.status && ageStage(h.age)===s));}
+      function overallPrestige(h){ return +((h.conformation+Math.max(h.movement,h.scope)+h.rideability)/3).toFixed(2); }
+      function horseDetails(h){
+        const lvl=+((h.conformation+h.movement+h.scope+h.rideability+h.quality+h.temperament+h.soundness)/7).toFixed(2);
+        return `${h.name}\n${h.breed}\n${h.age} Years Old | ${h.gender} | Age ${h.age} | Value ${f(horseValue(h))}\nID: ${h.id}\nQuality: ${h.quality} /10\nTemperament: ${h.temperament}/10\nSoundness: ${h.soundness}/10\nFertility: ${h.fertility}%\nConformation: ${h.conformation}\nMovement: ${h.movement}\nScope: ${h.scope}\nRideability: ${h.rideability}\nOverall Prestige: ${overallPrestige(h)} (${qualityTier(overallPrestige(h))})\nBloodline: ${h.bloodline}\nLevel: ${lvl} (${levelTier(lvl)})\nPotential Tier: ${h.potentialTier} (${h.potentialAvg})`;
+      }
+      function horseTable(list){
+        const rows=list.map(h=>`<tr class="horse-line" data-h="${h.id}"><td>${h.name}</td><td>${h.gender}</td><td>${h.age}</td><td>${h.breed}</td><td>${f(horseValue(h))}</td></tr>`).join('');
+        return `<table><thead><tr><th>Name</th><th>Gender</th><th>Age</th><th>Breed</th><th>Value</th></tr></thead><tbody>${rows||'<tr><td colspan="5" class="muted">None</td></tr>'}</tbody></table>`;
+      }
+      function renderHorseTab(){
+        document.getElementById('active-box').innerHTML=horseTable(byStatus('Active'));
+        document.getElementById('retired-box').innerHTML=horseTable(byStatus('Retired'));
+        document.getElementById('young-box').innerHTML=horseTable(byStatus('Young'));
+      }
+      function renderBreeding(){
+        const mares=byStatus('Retired').filter(h=>h.gender==='Mare'&&h.age<=18), st=byStatus('Retired').filter(h=>h.gender==='Stallion');
+        document.getElementById('mareList').innerHTML=mares.map(m=>`${m.name} | Fertility ${m.fertility}% | risk ${rand(5,20)}%`).join('<br>')||'<span class="muted">No mares</span>';
+        document.getElementById('stallionList').innerHTML=st.map(s=>`${s.name} | Quality ${s.quality}`).join('<br>')||'<span class="muted">No stallions</span>';
+        document.getElementById('mareSelect').innerHTML=mares.map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
+        document.getElementById('stallionSelect').innerHTML=st.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+        document.getElementById('breedLog').innerHTML=state.breedingLog.map(x=>`• ${x}`).join('<br>')||'<span class="muted">No entries</span>';
+      }
+      function refreshSales(){
+        state.sales=Array.from({length:6},(_,i)=>mkHorse(state.nextId+i,`Market Horse ${state.year}-${state.month}-${i+1}`,Math.random()<.5?'Mare':'Stallion',rand(2,14),false));
+        state.nextId+=6; state.nextSalesRefresh=rand(1,4);
+      }
+      function genStuds(){
+        state.studs=[{name:'Local Stud',fee:1500,quality:'5–6'},{name:'Approved Stud',fee:8000,quality:'7–8'},{name:'Elite Licensed Stud',fee:22000,quality:'9–10'}];
+      }
+      function renderSales(){
+        document.getElementById('salesList').innerHTML=horseTable(state.sales);
+        document.getElementById('studList').innerHTML=state.studs.map(s=>`${s.name} | Stud fee: ${f(s.fee)} | Quality: ${s.quality}`).join('<br>');
+      }
+      function renderStable(){
+        document.getElementById('stableRep').innerHTML=`Reputation: ${state.reputation}/1000<br>200+: Elite stallions | 400+: Investors | 700+: National team interest | 900+: Global prestige tier`;
+        document.getElementById('facilityList').innerHTML=facilities.map(x=>`${x.name} | Cost ${f(x.cost)} | ${x.capacity}`).join('<br>')+`<br><br>Maintenance: 3% per year`;
+        document.getElementById('marketState').innerHTML=`${state.market.state} (${Math.round((state.market.multiplier-1)*100)}% value effect)`;
+      }
+      function renderStaff(){
+        const rows=state.staff.map(s=>`<tr><td>${s.name}</td><td>${s.assigned}</td><td>${s.gender}</td><td>${s.skill}</td><td>${s.experience}</td><td>${f(s.salary)}</td><td>${s.loyalty}</td><td>${s.reputation}</td><td>${s.workEthic}</td><td>${s.demandingness}</td></tr>`).join('');
+        document.getElementById('staff-list-box').innerHTML=`<table><thead><tr><th>Name</th><th>Assigned horses</th><th>Gender</th><th>Skill</th><th>Experience</th><th>Salary</th><th>Loyalty</th><th>Reputation</th><th>Work ethic</th><th>Demandingness</th></tr></thead><tbody>${rows}</tbody></table><hr>${staffRoles.map(r=>`${r[0]}: ${r[1]}`).join('<br>')}`;
+      }
+      function updateTop(){
+        document.getElementById('datePill').textContent=`${state.month}M/${state.year}Y`;
+        document.getElementById('moneyPill').textContent=`Balance: ${f(state.money)}`;
+        document.getElementById('repPill').textContent=`Rep: ${state.reputation}`;
+      }
+      function render(){updateTop(); renderHorseTab(); renderBreeding(); renderSales(); renderStable(); renderStaff(); save();}
+
+      function skipMonth(){
+        state.month++; state.nextSalesRefresh--;
+        state.horses.forEach(h=>{if(h.pregnant){h.pregnancyRemaining--; if(h.pregnancyRemaining<=0){h.pregnant=false; const foal=mkHorse(state.nextId++,`${h.name.split(' ')[0]} Foal ${rand(10,99)}`,Math.random()<.5?'Mare':'Stallion',0,true);foal.status='Young'; state.horses.push(foal); state.breedingLog.unshift(`${state.month}/${state.year}: ${h.name} gave birth to ${foal.name}.`);}}});
+        if(state.month>12){
+          state.month=1; state.year++;
+          state.horses.forEach(h=>{h.age++; if(h.age>=3&&h.status==='Young')h.status='Active'; if(h.age>=8&&h.status==='Active'&&h.gender==='Mare')h.status='Retired';});
+          const roll=rand(1,6); const map={1:['Recession',0.75],2:['Weak Market',0.9],3:['Stable',1],4:['Stable',1],5:['Growth',1.15],6:['Luxury Demand',1.3]};
+          state.market={state:map[roll][0],multiplier:map[roll][1]};
         }
-
-        primaryDisciplineStat() {
-          if (this.discipline === 'Dressage') return this.stats.movement;
-          if (this.discipline === 'Showjumping') return this.stats.scope;
-          return Math.round((this.stats.movement + this.stats.scope) / 2);
-        }
-
-        calculateValue(marketCondition = 1) {
-          const base = (this.stats.conformation + this.primaryDisciplineStat() + this.stats.bloodlinePrestige) * 2000;
-          const temperamentMod = 0.75 + this.stats.temperament * 0.05;
-          const soundnessMod = 0.7 + this.stats.soundness * 0.06;
-          return Math.round(base * temperamentMod * soundnessMod * marketCondition);
-        }
-
-        train(level) {
-          const profile = {
-            basic: { chance: 0.25, fatigue: 6, injuryRisk: 0.02 },
-            professional: { chance: 0.4, fatigue: 10, injuryRisk: 0.04 },
-            elite: { chance: 0.55, fatigue: 14, injuryRisk: 0.07 }
-          }[level];
-
-          this.fatigue = Math.min(100, this.fatigue + profile.fatigue);
-          const key = this.discipline === 'Dressage' ? 'movement' : this.discipline === 'Showjumping' ? 'scope' : (Math.random() < 0.5 ? 'movement' : 'scope');
-
-          let improved = false;
-          if (Math.random() < profile.chance && this.stats[key] < 10) {
-            this.stats[key] += 1;
-            improved = true;
-          }
-
-          if (Math.random() < profile.injuryRisk) this.injured = true;
-          return { improved, key, injured: this.injured };
-        }
-
-        breed(partner, foalId) {
-          const foalStats = {};
-          for (const stat of STATS) {
-            const avg = (this.stats[stat] + partner.stats[stat]) / 2;
-            let value = Math.round(avg + (Math.random() * 2 - 1));
-            if (Math.random() < 0.05) value += Math.random() < 0.5 ? -2 : 2;
-            foalStats[stat] = Math.max(1, Math.min(10, value));
-          }
-          return new Horse({
-            id: foalId,
-            name: generateHorseName(Math.random() < 0.5 ? 'Mare' : 'Stallion'),
-            age: 0,
-            gender: Math.random() < 0.5 ? 'Mare' : 'Stallion',
-            breed: this.breed,
-            discipline: Math.random() < 0.5 ? this.discipline : partner.discipline,
-            status: 'Young',
-            owner: 'player',
-            stats: foalStats,
-            parentIds: [this.id, partner.id],
-            fatigue: 0,
-            injured: false,
-            lastBredYear: null
-          });
-        }
+        if(state.nextSalesRefresh<=0)refreshSales();
+        render();
       }
 
-      class Market {
-        generateHorses(count, state) {
-          const horses = [];
-          for (let i = 0; i < count; i += 1) {
-            const gender = Math.random() < 0.5 ? 'Mare' : 'Stallion';
-            const horse = new Horse({
-              id: state.nextHorseId++,
-              name: generateHorseName(gender),
-              age: randomInt(2, 12),
-              gender,
-              breed: pick(BREEDS),
-              discipline: pick(DISCIPLINES),
-              status: 'Active',
-              owner: 'npc',
-              stats: randomStats(),
-              parentIds: [],
-              fatigue: randomInt(0, 15),
-              injured: false,
-              lastBredYear: null
-            });
-            horses.push(horse);
-          }
-          return horses;
-        }
-
-        refresh(state) {
-          const amount = randomInt(5, 15);
-          const horses = this.generateHorses(amount, state);
-          horses.forEach((horse) => {
-            state.horses.push(horse);
-            state.market.push(horse.id);
-          });
-          console.log('[market] refreshed with horses:', state.market.length);
-        }
-      }
-
-      const marketSystem = new Market();
-
-      function defaultState() {
-        return {
-          cash: 320000,
-          reputation: 25,
-          year: 1,
-          month: 1,
-          nextHorseId: 1,
-          horses: [],
-          staff: [],
-          market: [],
-          playerHorseIds: [],
-          marketCondition: 1,
-          logs: [],
-          breedingLogs: []
-        };
-      }
-
-      let gameState = null;
-
-      function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-      function pick(list) { return list[randomInt(0, list.length - 1)]; }
-      function money(value) { return `€${Math.round(value).toLocaleString()}`; }
-
-      function randomStats() {
-        return {
-          conformation: randomInt(3, 9), movement: randomInt(3, 9), scope: randomInt(3, 9),
-          rideability: randomInt(3, 9), temperament: randomInt(3, 9), soundness: randomInt(3, 9), bloodlinePrestige: randomInt(3, 9)
-        };
-      }
-
-      function generateHorseName(gender) {
-        const name = gender === 'Mare' ? pick(FEMALE_NAMES) : pick(MALE_NAMES);
-        return `${name} ${String.fromCharCode(65 + randomInt(0, 25))}${randomInt(10, 99)}`;
-      }
-
-      function serializeState(state) {
-        return JSON.stringify(state);
-      }
-
-      function hydrateState(raw) {
-        const merged = { ...defaultState(), ...raw };
-        merged.horses = merged.horses.map((h) => new Horse(h));
-        return merged;
-      }
-
-      function createStarterGame() {
-        const state = defaultState();
-        const starterHorses = [
-          new Horse({
-            id: state.nextHorseId++, name: 'Aurora Start', age: 3, gender: 'Mare', breed: 'Warmblood', discipline: 'Dressage',
-            status: 'Active', owner: 'player', stats: { conformation: 6, movement: 7, scope: 5, rideability: 7, temperament: 7, soundness: 7, bloodlinePrestige: 6 }, parentIds: []
-          }),
-          new Horse({
-            id: state.nextHorseId++, name: 'Atlas Start', age: 5, gender: 'Stallion', breed: 'Hanoverian', discipline: 'Showjumping',
-            status: 'Breeding', owner: 'player', stats: { conformation: 7, movement: 6, scope: 8, rideability: 6, temperament: 6, soundness: 7, bloodlinePrestige: 7 }, parentIds: []
-          }),
-          new Horse({
-            id: state.nextHorseId++, name: 'Willow Start', age: 4, gender: 'Mare', breed: 'Dutch Warmblood', discipline: 'Eventing',
-            status: 'Breeding', owner: 'player', stats: { conformation: 7, movement: 7, scope: 7, rideability: 6, temperament: 7, soundness: 6, bloodlinePrestige: 7 }, parentIds: []
-          })
-        ];
-        starterHorses.forEach((horse) => {
-          state.horses.push(horse);
-          state.playerHorseIds.push(horse.id);
-        });
-        state.staff = [
-          { id: 1, name: 'Elena Novak', role: 'Barn Manager', salary: 52000, skill: 8 },
-          { id: 2, name: 'Marc Dubois', role: 'Rider', salary: 47000, skill: 7 }
-        ];
-        marketSystem.refresh(state);
-        return state;
-      }
-
-      function saveGame() {
-        localStorage.setItem(STORE_KEY, serializeState(gameState));
-        console.log('[state] saved', gameState);
-      }
-
-      function loadGame() {
-        const saved = localStorage.getItem(STORE_KEY);
-        if (!saved) {
-          gameState = createStarterGame();
-          saveGame();
-          return;
-        }
-        try {
-          gameState = hydrateState(JSON.parse(saved));
-        } catch {
-          gameState = createStarterGame();
-          saveGame();
-        }
-      }
-
-      function setTab(tabName) {
-        document.querySelectorAll('.tab').forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === tabName));
-        document.querySelectorAll('.panel').forEach((panel) => panel.classList.toggle('active', panel.id === `panel-${tabName}`));
-      }
-
-      function getHorseById(id) {
-        return gameState.horses.find((h) => h.id === Number(id));
-      }
-
-      function playerHorses() {
-        return gameState.playerHorseIds.map(getHorseById).filter(Boolean);
-      }
-
-      function marketHorses() {
-        return gameState.market.map(getHorseById).filter(Boolean);
-      }
-
-      function updateKPIs() {
-        document.getElementById('kpiDate').textContent = `Date: ${gameState.month}/${gameState.year}`;
-        document.getElementById('kpiCash').textContent = `Cash: ${money(gameState.cash)}`;
-        document.getElementById('kpiRep').textContent = `Reputation: ${gameState.reputation}`;
-        document.getElementById('kpiMarket').textContent = `Market x${gameState.marketCondition.toFixed(2)}`;
-      }
-
-      function renderHorses() {
-        const filter = document.getElementById('horseFilter').value;
-        const horses = playerHorses().filter((h) => filter === 'All' || h.status === filter);
-        const html = horses.map((horse) => {
-          const value = horse.calculateValue(gameState.marketCondition);
-          const injuredTag = horse.injured ? '<div style="color:#ff9f9f;">Injured</div>' : '';
-          const trainButtons = horse.status === 'Active'
-            ? `<div class="toolbar"><button data-train="${horse.id}" data-level="basic">Train Basic</button><button data-train="${horse.id}" data-level="professional">Train Professional</button><button data-train="${horse.id}" data-level="elite">Train Elite</button></div>`
-            : '';
-          return `<div class="card">
-            <h3 style="margin:0;">${horse.name}</h3>
-            <div>${horse.age}y • ${horse.gender} • ${horse.breed} • ${horse.discipline}</div>
-            <div>Status: ${horse.status}</div>
-            <div>Value: ${money(value)}</div>
-            <div>Stats C${horse.stats.conformation} M${horse.stats.movement} S${horse.stats.scope} R${horse.stats.rideability} T${horse.stats.temperament} So${horse.stats.soundness} B${horse.stats.bloodlinePrestige}</div>
-            <div>Fatigue: ${horse.fatigue}</div>
-            ${injuredTag}
-            ${trainButtons}
-          </div>`;
-        }).join('');
-        document.getElementById('horsesList').innerHTML = html || '<div class="muted">No horses match this filter.</div>';
-      }
-
-      function renderMarket() {
-        const html = marketHorses().map((horse) => {
-          const price = horse.calculateValue(gameState.marketCondition);
-          return `<div class="card">
-            <h3 style="margin:0;">${horse.name}</h3>
-            <div>${horse.age}y • ${horse.gender} • ${horse.breed} • ${horse.discipline}</div>
-            <div>Stats C${horse.stats.conformation} M${horse.stats.movement} S${horse.stats.scope} R${horse.stats.rideability} T${horse.stats.temperament} So${horse.stats.soundness} B${horse.stats.bloodlinePrestige}</div>
-            <div><strong>Price: ${money(price)}</strong></div>
-            <button class="btn-primary" data-buy="${horse.id}">Buy</button>
-          </div>`;
-        }).join('');
-        document.getElementById('marketList').innerHTML = html || '<div class="muted">Market is empty. Refresh it.</div>';
-      }
-
-      function renderStaff() {
-        const rows = gameState.staff.map((s) => `<tr><td>${s.name}</td><td>${s.role}</td><td>${s.skill}</td><td>${money(s.salary)}</td></tr>`).join('');
-        document.getElementById('staffTableWrap').innerHTML = `<table><thead><tr><th>Name</th><th>Role</th><th>Skill</th><th>Salary</th></tr></thead><tbody>${rows}</tbody></table>`;
-      }
-
-      function renderBarn() {
-        document.getElementById('barnSummary').innerHTML = `
-          <p>Total Horses: ${gameState.horses.length}</p>
-          <p>Player Owned: ${gameState.playerHorseIds.length}</p>
-          <p>Market Horses: ${gameState.market.length}</p>
-        `;
-        document.getElementById('eventLog').innerHTML = gameState.logs.map((l) => `<div>• ${l}</div>`).join('');
-      }
-
-      function renderFinance() {
-        const playerValue = playerHorses().reduce((sum, horse) => sum + horse.calculateValue(gameState.marketCondition), 0);
-        document.getElementById('financeSummary').innerHTML = `
-          <p>Cash: ${money(gameState.cash)}</p>
-          <p>Horse Assets: ${money(playerValue)}</p>
-          <p>Reputation: ${gameState.reputation}</p>
-          <p>Date: ${gameState.month}/${gameState.year}</p>
-          <p>Market Condition Multiplier: ${gameState.marketCondition.toFixed(2)}</p>
-        `;
-      }
-
-      function renderBreeding() {
-        const breedingHorses = playerHorses().filter((h) => h.status === 'Breeding');
-        const mares = breedingHorses.filter((h) => h.gender === 'Mare');
-        const stallions = breedingHorses.filter((h) => h.gender === 'Stallion');
-
-        let html = '';
-        mares.forEach((mare) => {
-          stallions.forEach((stallion) => {
-            const blocked = mare.lastBredYear === gameState.year;
-            html += `<div class="card" style="margin-bottom:0.6rem;">
-              <div><strong>Mare:</strong> ${mare.name} × <strong>Stallion:</strong> ${stallion.name}</div>
-              <div>${blocked ? 'Mare already bred this year.' : 'Compatible pair ready.'}</div>
-              <button class="btn-ok" data-breed="${mare.id}" data-stallion="${stallion.id}" ${blocked ? 'disabled' : ''}>Breed</button>
-            </div>`;
-          });
-        });
-
-        if (!html) html = '<div class="muted">Need at least one mare and one stallion in Breeding status.</div>';
-        document.getElementById('breedingPairs').innerHTML = html;
-        document.getElementById('breedingLog').innerHTML = gameState.breedingLogs.map((l) => `<div>• ${l}</div>`).join('');
-      }
-
-      function renderAll() {
-        updateKPIs();
-        renderHorses();
-        renderStaff();
-        renderMarket();
-        renderBarn();
-        renderFinance();
-        renderBreeding();
-      }
-
-      function logEvent(msg) {
-        gameState.logs.unshift(`[${gameState.month}/${gameState.year}] ${msg}`);
-        gameState.logs = gameState.logs.slice(0, 120);
-        console.log('[event]', msg);
-      }
-
-      function buyHorse(horseId) {
-        const horse = getHorseById(horseId);
-        if (!horse || horse.owner !== 'npc') return;
-        const price = horse.calculateValue(gameState.marketCondition);
-        if (gameState.cash < price) {
-          alert('Insufficient cash to buy this horse.');
-          logEvent(`Purchase failed for ${horse.name} (insufficient cash).`);
-          console.log('[purchase] failed', horse.name);
-          return;
-        }
-        gameState.cash -= price;
-        horse.owner = 'player';
-        horse.status = horse.age <= 2 ? 'Young' : 'Active';
-        gameState.playerHorseIds.push(horse.id);
-        gameState.market = gameState.market.filter((id) => id !== horse.id);
-        gameState.reputation += 1;
-        logEvent(`Bought ${horse.name} for ${money(price)}.`);
-        console.log('[purchase] success', horse.name, price);
-        saveGame();
-        renderAll();
-      }
-
-      function breedPair(mareId, stallionId) {
-        const mare = getHorseById(mareId);
-        const stallion = getHorseById(stallionId);
-        if (!mare || !stallion) return;
-        if (mare.lastBredYear === gameState.year) return;
-        const foal = mare.breed(stallion, gameState.nextHorseId++);
-        mare.lastBredYear = gameState.year;
-        gameState.horses.push(foal);
-        gameState.playerHorseIds.push(foal.id);
-        const log = `Foal ${foal.name} born from ${mare.name} x ${stallion.name}.`;
-        gameState.breedingLogs.unshift(`[${gameState.month}/${gameState.year}] ${log}`);
-        gameState.breedingLogs = gameState.breedingLogs.slice(0, 80);
-        gameState.reputation += 2;
-        logEvent(log);
-        console.log('[breeding] new foal', foal);
-        saveGame();
-        renderAll();
-      }
-
-      function trainHorse(horseId, level) {
-        const horse = getHorseById(horseId);
-        if (!horse || horse.status !== 'Active') return;
-        const result = horse.train(level);
-        logEvent(`${horse.name} ${level} training: ${result.improved ? `+1 ${result.key}` : 'no stat gain'}${result.injured ? ', injured' : ''}.`);
-        if (result.improved) gameState.reputation += 1;
-        console.log('[training]', horse.name, result);
-        saveGame();
-        renderAll();
-      }
-
-      function refreshMarket() {
-        gameState.market.forEach((id) => {
-          const horse = getHorseById(id);
-          if (horse) horse.owner = 'archived';
-        });
-        gameState.market = [];
-        marketSystem.refresh(gameState);
-        logEvent('Market refreshed with new NPC horses.');
-        saveGame();
-        renderAll();
-      }
-
-      function advanceMonth() {
-        gameState.month += 1;
-        if (gameState.month > 12) {
-          gameState.month = 1;
-          gameState.year += 1;
-          gameState.marketCondition = Number((0.85 + Math.random() * 0.35).toFixed(2));
-          gameState.horses.forEach((h) => {
-            h.age += 1;
-            h.fatigue = Math.max(0, h.fatigue - 8);
-            if (Math.random() < 0.2) h.injured = false;
-          });
-          logEvent(`New year started. Market condition changed to x${gameState.marketCondition.toFixed(2)}.`);
-          console.log('[year advancement]', gameState.year, gameState.marketCondition);
-        } else {
-          logEvent('Month advanced.');
-        }
-        saveGame();
-        renderAll();
-      }
-
-      document.addEventListener('DOMContentLoaded', function () {
-        loadGame();
-        renderAll();
-
-        document.querySelectorAll('.tab').forEach((tab) => {
-          tab.addEventListener('click', () => setTab(tab.dataset.tab));
-        });
-
-        document.getElementById('horseFilter').addEventListener('change', renderHorses);
-        document.getElementById('skipMonthBtn').addEventListener('click', advanceMonth);
-        document.getElementById('refreshMarketBtn').addEventListener('click', refreshMarket);
-        document.getElementById('saveBtn').addEventListener('click', () => {
-          saveGame();
-          logEvent('Manual save complete.');
-          renderBarn();
-        });
-        document.getElementById('loadBtn').addEventListener('click', () => {
-          loadGame();
-          logEvent('Save loaded.');
-          renderAll();
-        });
-        document.getElementById('newGameBtn').addEventListener('click', () => {
-          gameState = createStarterGame();
-          saveGame();
-          logEvent('New game created.');
-          renderAll();
-        });
-
-        document.getElementById('marketList').addEventListener('click', (event) => {
-          const buyId = event.target.dataset.buy;
-          if (buyId) buyHorse(Number(buyId));
-        });
-
-        document.getElementById('horsesList').addEventListener('click', (event) => {
-          const horseId = event.target.dataset.train;
-          const level = event.target.dataset.level;
-          if (horseId && level) trainHorse(Number(horseId), level);
-        });
-
-        document.getElementById('breedingPairs').addEventListener('click', (event) => {
-          const mareId = event.target.dataset.breed;
-          const stallionId = event.target.dataset.stallion;
-          if (mareId && stallionId) breedPair(Number(mareId), Number(stallionId));
-        });
+      document.addEventListener('click',(e)=>{
+        const t=e.target;
+        if(t.classList.contains('tab')){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(`${t.dataset.tab}-panel`).classList.add('active');}
+        if(t.classList.contains('toggle-btn')){document.getElementById(t.dataset.target).classList.toggle('hidden');}
+        const row=t.closest('.horse-line'); if(row){const h=state.horses.find(x=>x.id===+row.dataset.h); if(h)document.getElementById('horseDetails').textContent=horseDetails(h);}
       });
+
+      document.getElementById('skipMonth').onclick=skipMonth;
+      document.getElementById('saveGame').onclick=()=>save();
+      document.getElementById('loadGame').onclick=()=>load();
+      document.getElementById('resetGame').onclick=()=>reset();
+      document.getElementById('refreshSales').onclick=()=>{refreshSales(); render();};
+      document.getElementById('breedBtn').onclick=()=>{
+        const mare=state.horses.find(h=>h.id===+document.getElementById('mareSelect').value), st=state.horses.find(h=>h.id===+document.getElementById('stallionSelect').value);
+        if(!mare||!st)return; if(mare.pregnant)return;
+        if(Math.random()*100 <= mare.fertility){ mare.pregnant=true; mare.pregnancyRemaining=rand(10,14); state.breedingLog.unshift(`${state.month}/${state.year}: ${mare.name} bred with ${st.name}.`);} else {state.breedingLog.unshift(`${state.month}/${state.year}: Breeding failed for ${mare.name}.`);}
+        render();
+      };
+
+      load();
     </script>
   </body>
 </html>
